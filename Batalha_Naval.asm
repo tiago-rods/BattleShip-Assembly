@@ -238,11 +238,12 @@ ENDM
 
 .MODEL SMALL
 .STACK 100H
-
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;                  SEGMENTO DE DADOS
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 .DATA
 ;======================================= CONSTANTES 
-    LINHAS EQU 15
-    COLUNAS EQU 15
+    LINHAS_COLUNAS EQU 10
 ;======================================= VETORES PARA DESENHO DE LOGO
 ; L0 A L5 ESCREVEM A PALAVRA "BATALHA"
     L0 DB 0C9h, 37 DUP(0CDh),0BBh, 13,10,"$"
@@ -285,12 +286,25 @@ ENDM
 ;======================================= OUTRAS STRINGS
 
     PTC DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
-    MSG_ATAQUE_LINHA DB "Digite o numero da linha para o ataque: $"
+
+;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
+
+    MSG_ATAQUE_LINHA  DB "Digite o numero da linha para o ataque: $"
     MSG_ATAQUE_COLUNA DB "Digite o numero da coluna para o ataque: $"
-    POS_LINHA DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
-    POS_COLUNA DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
-    VET_TIRO DW ?, ?
-    MSG_ERRO_MAPA DB "Coordenada inválidas, digite uma coordenada dentro do limite do mapa"
+    POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
+    POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
+    VET_TIRO          DW ?, ?
+    MSG_ERRO_MAPA     DB "Coordenada inválidas, digite uma coordenada dentro do limite do mapa"
+
+;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
+
+    NUM_ALEATORIO DB ?
+    RESULTADO     DB ?
+
+;====================================== STRING PARA PROCEDIMENTO "ALEATORIO_LINHA"
+
+    NUM_ALEATORIO_LINHA DB ?
+    RESULTADO_LINHA     DB ?
 .CODE 
 
 MAIN PROC
@@ -376,6 +390,33 @@ TELA_INICIAL PROC
 
     RET
 TELA_INICIAL ENDP
+
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO DE 0 A 9================={
+;
+;  FUNÇÃO : GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 9, PODE SER SOMADO COM NUMERO DA
+;  LINHA PARA POSICIONAR EMBARCAÇÕES ALEATORIAMENTE EM LINHA E COLUNA ALEATÓRIOS
+;
+;  COMO USAR: CHAMAR QUANDO PRECISAR POSICIONAR EMBARCAÇÕES AO COMEÇO DO JOGO
+;
+;  NOME: ALEATORIO
+
+;
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO DE 0 A 9================={
+ALEATORIO PROC
+    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
+    INT 1AH
+
+    MOV AX, DX                     ; Coloca o valor do timer em AX
+    MOV DX, 0                      ; Limpa DX para a divisão
+    MOV BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
+    DIV BX                         ; Divide AX por 10
+    MOV NUM_ALEATORIO, DL          ; Armazena o resto (0-9) em NUM_ALEATORIO
+
+    MOV RESULTADO, AL              ; Armazena o resultado em RESULTADO
+    RET
+
+ALEATORIO ENDP
+
 ;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA================={
 ;
 ;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 9, O QUAL É MULTIPLICADO 
@@ -388,88 +429,94 @@ TELA_INICIAL ENDP
 ; 
 ;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA=================}
 ALEATORIO_LINHA PROC
-    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
-    INT 1AH
 
-    MOV AX, DX                     ; Coloca o valor do timer em AX
-    MOV DX, 0                      ; Limpa DX para a divisão
-    MOV BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
-    DIV BX                         ; Divide AX por 10
-    MOV NUM_ALEATORIO, DL          ; Armazena o resto (0-9) em NUM_ALEATORIO
+    CALL ALEATORIO
 
-    MOV AL, NUM_ALEATORIO          ; Move o número aleatório para AL
+    MOV NUM_ALEATORIO_LINHA, DL    ; Número aleatório (0-9) armazenado em DL
+
+    MOV AL, NUM_ALEATORIO_LINHA    ; Move o número aleatório para AL
     MOV BL, 24                     ; Multiplicador
     MUL BL                         ; Multiplica AL (número aleatório) por BL (24)
 
-    MOV RESULTADO, AL               ; Armazena o resultado em RESULT
+    MOV RESULTADO_LINHA, AL        ; Armazena o resultado em RESULTADO
     RET
 
 ALEATORIO_LINHA ENDP
 
+;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR================={
+;
+;  FUNÇÃO: PEGAR RESPECTIVAMENTE LINHA E COLUNA A QUAL O JOGADOR DESEJA ATACAR, ADEMAIS
+;  VERIFICA SE O LOCAL ESTÁ DENTRO OU FORA DA ÁREA DE ATAQUE
+;  
+;  COMO USAR: CHAMAR QUANDO O JOGADOR FOR ATACAR
+;
+;   NOME: PEGAR_COORDENADAS
+;
+;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR=================}
 PEGAR_COORDENADAS PROC
 
     ;ATACAR LINHA 
-    PRINTS MSG_ATAQUE_LINHA ;mensagem de pegar coordenadas na tela
+    PRINTS MSG_ATAQUE_LINHA             ; mensagem de pegar coordenadas na tela
     
-    MOV AX, 01H ;pega o caractere
+    MOV AX, 01H                         ; pega o caractere
     INT 21H
     
-    ; Verifica se a linha está dentro do limite (0 a 9)
+;                                       ; Verifica se a linha está dentro do limite (0 a 9)
     CMP POS_LINHA, "0"
-    JL FORA_DO_MAPA  ; Linha menor que 0, fora do mapa
+    JL FORA_DO_MAPA                     ; Linha menor que 0, fora do mapa
     CMP POS_LINHA, "9"
-    JG FORA_DO_MAPA  ; Linha maior que 9, fora do mapa
+    JG FORA_DO_MAPA                     ; Linha maior que 9, fora do mapa
 
-    SUB AL, 29H ;converte para um valor numerico entre 1 e 10
-    ;agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
-    MOV BX, 24 ;multiplica por 24 pq EX: 1x24= 24, 2x24=48, e isso ocorre pq a matriz entra, de fato na posição 24, 48, 72, etc
-    MUL BX ;DX:AX -> AX.BX
+    SUB AL, 29H                         ; converte para um valor numerico entre 1 e 10
+;                                       ; agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
+    MOV BX, 24                          ; multiplica por 24 pq EX: 1x24= 24, 2x24=48, e isso ocorre pq a matriz entra, de fato na posição 24, 48, 72, etc
+    MUL BX                              ; DX:AX -> AX.BX
 
-    MOV POS_LINHA, AX ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+    MOV POS_LINHA, AX                   ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
-    ;zera ax e bx
+;                                      ;zera ax e bx
     XOR AX, AX
     XOR BX, BX
 
-    ;ATACAR COLUNA
-    PRINTS MSG_ATAQUE_COLUNA ;mensagem de pegar coordenadas na tela
+;                                       ;ATACAR COLUNA
+    PRINTS MSG_ATAQUE_COLUNA            ; mensagem de pegar coordenadas na tela
     
-    MOV AX, 01H ;pega o caractere
+    MOV AX, 01H                         ; pega o caractere
     INT 21h
 
-    ; Verifica se a coluna está dentro do limite (A a J)
+;                                       ; Verifica se a coluna está dentro do limite (A a J)
     CMP POS_COLUNA, "A"
-    JL FORA_DO_MAPA  ; Coluna menor que A, fora do mapa
+    JL FORA_DO_MAPA                     ; Coluna menor que A, fora do mapa
     CMP POS_COLUNA, "J"
-    JG FORA_DO_MAPA  ; Coluna maior que J, fora do mapa
+    JG FORA_DO_MAPA                     ; Coluna maior que J, fora do mapa
 
-    SUB AL, 40H  ;tira 40h para realizar as contas
-    MOV BX, 2   ;multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
+    SUB AL, 40H                         ; tira 40h para realizar as contas
+    MOV BX, 2                           ; multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
     MUL BX
 
-    MOV POS_COLUNA, AX ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+    MOV POS_COLUNA, AX                  ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
-    ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
+;                                       ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
 
-    ; Se as coordenadas estão no limite do mapa, continue
+;                                       ; Se as coordenadas estão no limite do mapa, continue
     JMP VERIFICAR_ATAQUE
 
     FORA_DO_MAPA:
-    ; Mensagem de erro e solicitação de novas coordenadasDAS
+;                                       ; Mensagem de erro e solicitação de novas coordenadasDAS
     LEA DX, MSG_ERRO_MAPA
     MOV AH, 9
     INT 21H
-    JMP PEGAR_COORDENADAS  ; Volta para pegar novas coordenadas
+    JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
 
     VERIFICAR_ATAQUE:
-    ; Calcula o deslocamento dentro da matriz 10x10
+;                                       ; Calcula o deslocamento dentro da matriz 10x10
     PUSH_ALL
-    ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
+;                                       ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
     MOV BX, POS_LINHA
     MOV DI, POS_COLUNA
     CMP TABULEIRO[BX][DI], 1
-    JE ACERTOU              ; Se for 1, acertou a embarcação
-    JMP ERROU               ; Se não, errou
+    JE ACERTOU                          ; Se for 1, acertou a embarcação
+    JMP ERROU                           ; Se não, errou
 
 
     ;######CONTINUAR DAQUI#######
