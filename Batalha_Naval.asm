@@ -189,12 +189,17 @@ ENDM
 
 ;-----------MACRO PARA POSICIONAR CURSOR------------{
 ;
-;  POSICIONA O CURSOR NA TELA
+;  FUNÇÃO DO MACRO: POSICIONA O CURSOR NA TELA
 ;
-;   : LINHA, COLUNA
+;  ONDE USAR: QUANDO PRECISAR POSICIONAR O CURSOR 
+;  EM UMA LINHA E COLUNA ESPECIFICOS DA TELA
 ;
+;  COMO USAR: CHAMAR MACRO E INDICAR PARAMETROS DE
+;  LINHA E COLUNA RESPECTIVAMENTE
 ;
+;  EXEMPLO DE USO:  POS_CURSOR 10, 20
 ;
+;  NOME: POS_CURSOR --> (POSICIONAR CURSOR)
 ;
 ;-----------MACRO PARA POSICIONAR CURSOR------------}
 POS_CURSOR MACRO linha, coluna 
@@ -212,7 +217,18 @@ POS_CURSOR MACRO linha, coluna
     POP DX
     POP AX
 ENDM
-
+;-------------MACRO DE INPUT SEM ECHO----------{
+;
+;  FUNÇÃO DO MACRO: FAZ UM INPUT SEM ECHO
+;
+;  ONDE USAR: QUANDO QUISER QUE O USUÁRIO DIGITE
+;  ALGO SEM QUE O CARACTER DIGITADO SEJA ARMAZENADO
+;
+;  COMO USAR: SOMENTE CHAMAR O MACRO 
+;
+;  NOME: PPC --> (PRESSIONE PARA CONTINUAR)
+;
+;-------------MACRO DE INPUT SEM ECHO----------}
 PPC MACRO 
     PUSH AX
     MOV AH, 7
@@ -235,6 +251,7 @@ ENDM
     L3 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,0DBh,0DBh, 32,32, 0BAh ,13,10, "$"
     L4 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh  ,13,10, "$"
     L5 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,13,10, "$"
+; L É APENAS PARA DESENHO ENTRE PALAVRAS
     L  DB 0BAh, 37 DUP(32), 0BAh, 13,10, "$"
 ; L6 A L9 ESCREVEM A PALAVRA "NAVAL"
     L6 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  32,0DBh,0DBh,32,    32,32,  0DBh,32,32,0DBh, 32,32, 32,0DBh,0DBh,32, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh, 13,10, "$"
@@ -252,7 +269,7 @@ ENDM
     HIDROAVAO   DW 1,1,1
                 DW 0,1,0
    
-;======================================= MATRIZ PARA DESENHO DE TABULEIRO
+;==================================== MATRIZ PARA DESENHO DE TABULEIRO
   TABULEIRO DW 0C9h, 10 DUP(0CDh), 0BBh
             DW 0BAh, 10 DUP(30H), 0BAh
             DW 0BAh, 10 DUP(30H), 0BAh
@@ -267,7 +284,7 @@ ENDM
             DW 0C8h, 10 DUP(0CDh), 0BCh        
 ;======================================= OUTRAS STRINGS
 
-    PTC DB "Pressione qualquer tecla para continuar ... $"
+    PTC DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
     MSG_ATAQUE_LINHA DB "Digite o numero da linha para o ataque: $"
     MSG_ATAQUE_COLUNA DB "Digite o numero da coluna para o ataque: $"
     POS_LINHA DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
@@ -297,93 +314,6 @@ MAIN PROC
     ;verificar se as embarcações estão no mesmo lugar / estão separadas por 1 casa
     ;pedir ao player digitar as coordenadas de tiro
 
-
-    PEGAR_COORDENADAS:
-
-    ;ATACAR LINHA 
-    MOV AX, 09H
-    LEA DX, MSG_ATAQUE_LINHA ;mensagem de pegar coordenadas na tela
-    INT 21H
-    
-    MOV AX, 01H ;pega o caractere
-    INT 21H
-    
-    ; Verifica se a linha está dentro do limite (0 a 9)
-    CMP POS_LINHA, "0"
-    JL FORA_DO_MAPA  ; Linha menor que 0, fora do mapa
-    CMP POS_LINHA, "9"
-    JG FORA_DO_MAPA  ; Linha maior que 9, fora do mapa
-
-    SUB AL, 29H ;converte para um valor numerico entre 1 e 10
-    ;agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
-    MOV BX, 24 ;multiplica por 24 pq EX: 1x24= 24, 2x24=48, e isso ocorre pq a matriz entra, de fato na posição 24, 48, 72, etc
-    MUL BX ;DX:AX -> AX.BX
-
-    MOV POS_LINHA, AX ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
-
-    XOR AX, AX
-    XOR BX, BX
-
-    ;ATACAR COLUNA
-    MOV AX, 09H
-    LEA DX, MSG_ATAQUE_COLUNA ;mensagem de pegar coordenadas na tela
-    INT 21h
-    
-    MOV AX, 01H ;pega o caractere
-    INT 21h
-
-    ; Verifica se a coluna está dentro do limite (A a J)
-    CMP POS_COLUNA, "A"
-    JL FORA_DO_MAPA  ; Coluna menor que A, fora do mapa
-    CMP POS_COLUNA, "J"
-    JG FORA_DO_MAPA  ; Coluna maior que J, fora do mapa
-
-    SUB AL, 40H  ;tira 40h para realizar as contas
-    MOV BX, 2   ;multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
-    MUL BX
-
-    MOV POS_COLUNA, AX ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
-
-    ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
-
-    ; Se as coordenadas estão no limite do mapa, continue
-    JMP VERIFICAR_ATAQUE
-
-    FORA_DO_MAPA:
-    ; Mensagem de erro e solicitação de novas coordenadasDAS
-    LEA DX, MSG_ERRO_MAPA
-    MOV AH, 9
-    INT 21H
-    JMP PEGAR_COORDENADAS  ; Volta para pegar novas coordenadas
-
-    VERIFICAR_ATAQUE:
-    ; Calcula o deslocamento dentro da matriz 10x10
-    PUSH_ALL
-
-    ; Verifica se a célula contém uma embarcação (por exemplo, valor 1)
-    MOV BX, POS_LINHA
-    MOV DI, POS_COLUNA
-    CMP TABULEIRO[BX][DI], 1
-    JE ACERTOU              ; Se for 1, acertou a embarcação
-    JMP ERROU               ; Se não, errou
-
-
-    ;######CONTINUAR DAQUI#######
-ACERTOU:
-    ; Atualiza o mapa para mostrar o acerto (marcar com outro símbolo, ex: 'X')
-    MOV [SI], 'X'           ; Marcar acerto com 'X'
-    JMP FIM_VERIFICACAO
-
-ERROU:
-    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
-    MOV [SI], 'O'           ; Marcar erro com 'O'
-
-FIM_VERIFICACAO:
-    ; Exibe o mapa atualizado
-    CALL MOSTRAR_TABULEIRO
-    JMP PEGAR_COORDENADAS ;vai para o próximo tiro
-    ;RETOMA O LOOP
-
 PROXIMO_TIRO:
     ; Continue o jogo ou finalize se todas as embarcações forem destruídas
 
@@ -403,6 +333,15 @@ FIM:
     INT 21H
 MAIN ENDP
 
+;=================PROCEDIMENTO DE TELA DE INICIAL================={
+;
+;  FUNÇÃO: MOSTRAR O LOGO "BATALHA NAVAL" AO INICIO DO CÓDIGO
+;
+;  COMO USAR: CHAMAR O PROCEDIMENTO AO INICIO DO CODIGO SOMENTE
+;  
+;  NOME: TELA_INICIAL
+;
+;=================PROCEDIMENTO DE TELA DE INICIAL=================}
 TELA_INICIAL PROC
         CLEAR_SCREEN
 
@@ -437,9 +376,18 @@ TELA_INICIAL PROC
 
     RET
 TELA_INICIAL ENDP
-
-
-ALEATORIO PROC
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA================={
+;
+;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 9, O QUAL É MULTIPLICADO 
+;  POR 24 POIS É INDICA O NÚMERO INICIAL DE LINHAS DA MATRIZ TABULEIRO,
+;  ASSIM POSICIONA EMBARCAÇÕES DE FORMA ALEATÓRIA ENTRE AS LINHAS DO TABULEIRO
+;
+;  COMO USAR: CHAMAR QUANDO PRECISAR POSICIONAR EMBARCAÇÕES AO COMEÇO DO JOGO
+;
+;  NOME: ALEATORIO_LINHA
+; 
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA=================}
+ALEATORIO_LINHA PROC
     MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
     INT 1AH
 
@@ -447,7 +395,7 @@ ALEATORIO PROC
     MOV DX, 0                      ; Limpa DX para a divisão
     MOV BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
     DIV BX                         ; Divide AX por 10
-    MOV NUM_ALEATORIO, DL          ; Armazena o resto (0-9) em RANDOMNUM
+    MOV NUM_ALEATORIO, DL          ; Armazena o resto (0-9) em NUM_ALEATORIO
 
     MOV AL, NUM_ALEATORIO          ; Move o número aleatório para AL
     MOV BL, 24                     ; Multiplicador
@@ -456,6 +404,91 @@ ALEATORIO PROC
     MOV RESULTADO, AL               ; Armazena o resultado em RESULT
     RET
 
-ALEATORIO ENDP
+ALEATORIO_LINHA ENDP
+
+PEGAR_COORDENADAS PROC
+
+    ;ATACAR LINHA 
+    PRINTS MSG_ATAQUE_LINHA ;mensagem de pegar coordenadas na tela
+    
+    MOV AX, 01H ;pega o caractere
+    INT 21H
+    
+    ; Verifica se a linha está dentro do limite (0 a 9)
+    CMP POS_LINHA, "0"
+    JL FORA_DO_MAPA  ; Linha menor que 0, fora do mapa
+    CMP POS_LINHA, "9"
+    JG FORA_DO_MAPA  ; Linha maior que 9, fora do mapa
+
+    SUB AL, 29H ;converte para um valor numerico entre 1 e 10
+    ;agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
+    MOV BX, 24 ;multiplica por 24 pq EX: 1x24= 24, 2x24=48, e isso ocorre pq a matriz entra, de fato na posição 24, 48, 72, etc
+    MUL BX ;DX:AX -> AX.BX
+
+    MOV POS_LINHA, AX ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+
+    ;zera ax e bx
+    XOR AX, AX
+    XOR BX, BX
+
+    ;ATACAR COLUNA
+    PRINTS MSG_ATAQUE_COLUNA ;mensagem de pegar coordenadas na tela
+    
+    MOV AX, 01H ;pega o caractere
+    INT 21h
+
+    ; Verifica se a coluna está dentro do limite (A a J)
+    CMP POS_COLUNA, "A"
+    JL FORA_DO_MAPA  ; Coluna menor que A, fora do mapa
+    CMP POS_COLUNA, "J"
+    JG FORA_DO_MAPA  ; Coluna maior que J, fora do mapa
+
+    SUB AL, 40H  ;tira 40h para realizar as contas
+    MOV BX, 2   ;multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
+    MUL BX
+
+    MOV POS_COLUNA, AX ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+
+    ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
+
+    ; Se as coordenadas estão no limite do mapa, continue
+    JMP VERIFICAR_ATAQUE
+
+    FORA_DO_MAPA:
+    ; Mensagem de erro e solicitação de novas coordenadasDAS
+    LEA DX, MSG_ERRO_MAPA
+    MOV AH, 9
+    INT 21H
+    JMP PEGAR_COORDENADAS  ; Volta para pegar novas coordenadas
+
+    VERIFICAR_ATAQUE:
+    ; Calcula o deslocamento dentro da matriz 10x10
+    PUSH_ALL
+    ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
+    MOV BX, POS_LINHA
+    MOV DI, POS_COLUNA
+    CMP TABULEIRO[BX][DI], 1
+    JE ACERTOU              ; Se for 1, acertou a embarcação
+    JMP ERROU               ; Se não, errou
+
+
+    ;######CONTINUAR DAQUI#######
+ACERTOU:
+    ; Atualiza o mapa para mostrar o acerto (marcar com outro símbolo, ex: 'X')
+    MOV [SI], 'X'           ; Marcar acerto com 'X'
+    JMP FIM_VERIFICACAO
+
+ERROU:
+    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
+    MOV [SI], 'O'           ; Marcar erro com 'O'
+
+FIM_VERIFICACAO:
+    ; Exibe o mapa atualizado
+    CALL MOSTRAR_TABULEIRO
+    JMP PEGAR_COORDENADAS ;vai para o próximo tiro
+    ;RETOMA O LOOP
+
+    RET
+PEGAR_COORDENADAS ENDP
 
 END MAIN
