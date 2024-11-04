@@ -51,11 +51,8 @@ ENDM
 ;-------------MACRO DE FIM DE LINHA---------}
 ENDL MACRO
     PUSH AX
-    PUSH CX
-
-    MOV AH, 2   
-    MOV DL, 13  ; Carriage Return
-    INT 21h        
+    PUSH DX
+    
     MOV DL, 10  ; Line Feed
     INT 21h  
 
@@ -134,58 +131,7 @@ PRINTC MACRO CHAR
     POP DX
 ENDM
 
-;----------MACRO PARA IMPRIMIR MATRIZ--------{
-;
-;  FUNÇÃO DO MACRO: IMPRIMIR MATRIZ DE 16BITS,(DW)
-;
-;  ONDE USAR: QUANDO QUISER IMPRIMIR UMA MATRIZ DW
-;
-;  COMO USAR: CHAMAR O MACRO, PASSAR A MATRIZ, TAMANHO
-;  DA MATRIZ, TAMANHO DA LINHA E A ULTIMA POSIÇÃO DA MATRIZ
-;
-;  EXEMPLO DE USO: PRINT_MATRIZ MATRIZ, 4, 2, 8
-;
-;  NOME: PRINT_MATRIZ
-;
-;----------MACRO PARA IMPRIMIR MATRIZ--------}
-PRINT_MATRIZ MACRO MATRIZ, CONTADOR, FIM_LINHA, ULTIMA_POS
-    PUSH_ALL
 
-    XOR BX, BX
-    XOR SI, SI
-    XOR DX, DX
-    
-    MOV CX, CONTADOR
-
-    MOSTRAR_MATRIZ:
-    XOR DX, DX
-    MOV DX, MATRIZ[BX][SI]
-
-    MOV AH, 2
-    INT 21H
-
-    ADD SI, 2
-
-    CMP SI, FIM_LINHA
-    JA NOVA_LINHA
-
-    LOOP MOSTRAR_MATRIZ
-
-    NOVA_LINHA:
-    ENDL
-    ADD BX, FIM_LINHA + 2
-    XOR SI, SI 
-    CMP BX, ULTIMA_POS
-
-    JA CONTINUAR
-    JMP MOSTRAR_MATRIZ
-
-
-
-    CONTINUAR:
-
-    POP_ALL
-ENDM
 
 ;-----------MACRO PARA POSICIONAR CURSOR------------{
 ;
@@ -275,14 +221,14 @@ ENDM
     L9 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh, 13,10, "$"
    L10 DB 0C8h, 37 DUP(0CDh), 0BCh,  13,10, "$"
 ;=================================== DEFINIÇÃO DE EMBARCAÇÕES
-    ENCOURACADO DW 1,1,1,1
+    ENCOURACADO DW 31H,31H,31H,31H
 
-    FRAGATA     DW 1,1,1
+    FRAGATA     DW 31H,31H,31H
 
-    SUBMARINO   DW 1,1
+    SUBMARINO   DW 31H,31H
 
-    HIDROAVAO   DW 1,1,1
-                DW 0,1,0
+    HIDROAVAO   DW 31H,31H,31H
+                DW 0,31H,0
    
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
   TABULEIRO    DW 0C9h, 14 DUP(0CDh), 0BBh
@@ -309,7 +255,10 @@ ENDM
     POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
     MSG_ERRO_MAPA     DB 10, 13, "Coordenada inválidas, digite uma coordenada dentro do limite do mapa $"
-
+;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
+    CONTADOR EQU 208
+    FIM_LINHA EQU 30
+    ULTIMA_POS EQU 400
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
     NUM_ALEATORIO DW ?
@@ -319,6 +268,9 @@ ENDM
 
     NUM_ALEATORIO_LINHA DW ?
     RESULTADO_LINHA     DW ?
+
+;====================================== STRING PARA PROCEDIMENTO "ALEATORIO_MODULO2"
+    MOD2_ALEATORIO
 .CODE 
 
 MAIN PROC
@@ -330,7 +282,7 @@ MAIN PROC
 
     CLEAR_SCREEN
     ENDL
-    PRINT_MATRIZ TABULEIRO, 208, 30, 400 ;matriz atualizada 
+    CALL PRINT_MATRIZ
 
     ;TODO:
     ;ADICIONAR ALEATORIAMENTE AS EMBARCAÇÕES NO TABULEIRO
@@ -339,7 +291,7 @@ MAIN PROC
     ;CONTABILIZAR ACERTO E ERRO DE EMBARCAÇÕES
 
     ;adicionar as embarcações no mapa
-    ;verificar se as embarcações estão no mesmo lugar / estão separadas por 1 casa
+    ;verificar se as embarcações estão no mesmo lugar / estão separadas por 31H casa
     ;pedir ao player digitar as coordenadas de tiro
 
     CALL PEGAR_COORDENADAS 
@@ -349,7 +301,7 @@ MAIN PROC
     MOV DL, 10
     INT 21H 
 
-    VERIFICAR_ATAQUE:
+     VERIFICAR_ATAQUE:
     PUSH_ALL
     ; Calcula o deslocamento dentro da matriz 10x10
     CALCULO_DESLOCAMENTO
@@ -369,47 +321,18 @@ ERROU:
     MOV WORD PTR [SI], "O"           ; Marcar erro com 'O'
     
 FIM_VERIFICACAO:
-    ; Exibe o mapa atualizado ATENCAO REFAZER ESSE PROCESSO USANDO PROC E NAO 
-    
-    ; IMPRIME A MATRIZ NOVAMENTE
-    PUSH_ALL
 
-    XOR BX, BX
-    XOR SI, SI
-    XOR DX, DX
-    
-    MOV CX, 208 ;contador da matriz
-
-    MOSTRAR_TABULEIRO:
-    XOR DX, DX
-    MOV DX, TABULEIRO[BX][SI]
-
-    MOV AH, 2
-    INT 21H
-
-    ADD SI, 2
-
-    CMP SI, 30
-    JA NL
-
-    LOOP MOSTRAR_TABULEIRO
-
-    NL:
-    ENDL
-    ADD BX, 30 + 2
-    XOR SI, SI 
-    CMP BX,  400
-
-    JA CONTINUAR
-    JMP MOSTRAR_TABULEIRO
-
-    POP_ALL
+    ;IMPRIME A MATRIZ ATUALIZADA
+    CALL PRINT_MATRIZ
 
     ;RETOMA O LOOP DE PEGAR COORDENADAS 
     PROXIMO_TIRO:
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
 
     CALL PEGAR_COORDENADAS ;vai para o próximo tiro
+
+    ; Continue o jogo ou finalize se todas as embarcações forem destruídas
+
 
     ; Continue o jogo ou finalize se todas as embarcações forem destruídas
 
@@ -472,6 +395,55 @@ TELA_INICIAL PROC
     RET
 TELA_INICIAL ENDP
 
+;----------PROCEDIMENTO PARA IMPRIMIR MATRIZ--------{
+;
+;  FUNÇÃO DO PROCEDIMENTO: IMPRIMIR MATRIZ DE 16BITS,(DW)
+;
+;  ONDE USAR: QUANDO QUISER IMPRIMIR UMA MATRIZ DW
+;
+;  COMO USAR: CHAMAR O PROCEDIMENTO
+;
+;  NOME: PRINT_MATRIZ
+;
+;----------PROCEDIMENTO PARA IMPRIMIR MATRIZ--------}
+PRINT_MATRIZ PROC
+    PUSH_ALL
+
+    XOR BX, BX
+    XOR SI, SI
+    XOR DX, DX
+    
+    MOV CX, CONTADOR
+
+    MOSTRAR_MATRIZ:
+    MOV DX, TABULEIRO[BX][SI]
+
+    MOV AH, 2
+    INT 21H
+
+    ADD SI, 2
+
+    CMP SI, FIM_LINHA
+    JA NOVA_LINHA
+
+    LOOP MOSTRAR_MATRIZ
+
+    NOVA_LINHA:
+    ENDL
+    ADD BX, FIM_LINHA + 2
+    XOR SI, SI 
+    CMP BX, ULTIMA_POS
+
+    JA FIM_PRINT
+    JMP MOSTRAR_MATRIZ
+
+    FIM_PRINT:
+
+    POP_ALL
+    RET
+
+PRINT_MATRIZ ENDP 
+
 ;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO================={
 ;
 ;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 9
@@ -529,6 +501,31 @@ ALEATORIO_LINHA PROC
     MOV RESULTADO_LINHA, AX        ; Armazena o resultado em RESULTADO
     RET
 ALEATORIO_LINHA ENDP
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2================={
+;
+;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 1
+;
+;  COMO USAR: USADO PARA DEFINIR SE A EMBARCAÇÃO TERÁ ORIENTAÇÃO VERTICAL OU HORIZONTAL
+;
+;  COMO FUNCIONA: GERA UM NÚMERO ALEATÓRIO E DIVIDE POR MODULO 2, EX: X % 2 = 0<=X<=1, NUM NATURAL
+;
+;  PROCEDIMENTOS CHAMADOS: NENHUM
+;
+;  NOME: ALEATORIO_MODULO2
+; 
+;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2=================}
+ALEATORIO_MODULO2 PROC
+    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
+    INT 1AH
+
+    MOV AX, DX                     ; Coloca o valor do timer em AX
+    MOV DX, 0                      ; Limpa DX para a divisão
+    MOV BX, 2                      ; O divisor é 10 para limitar o valor de 0 a 1
+    DIV BX                         ; Divide AX por 2
+    MOV MOD2_ALEATORIO, DL   
+
+    RET 
+ALEATORIO_MODULO2 ENDP
 
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR================={
 ;
@@ -592,7 +589,6 @@ PEGAR_COORDENADAS PROC
     MOV AH, 9
     INT 21H
     JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
-PEGAR_COORDENADAS ENDP
 
 ;+++++++++PROCEDIMENTOS EM PROGRESSO++++++++++++
 
@@ -824,30 +820,6 @@ FINALIZAR_VERIFICACAO:
     POP DX
     RET
 VERIFICAR_DISPONIBILIDADE ENDP
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2================={
-;
-;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 1
-;
-;  COMO USAR: USADO PARA DEFINIR SE A EMBARCAÇÃO TERÁ ORIENTAÇÃO VERTICAL OU HORIZONTAL
-;
-;  COMO FUNCIONA: GERA UM NÚMERO ALEATÓRIO E DIVIDE POR MODULO 2, EX: X % 2 = 0<=X<=1, NUM NATURAL
-;
-;  PROCEDIMENTOS CHAMADOS: NENHUM
-;
-;  NOME: ALEATORIO_MODULO2
-; 
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2=================}
-ALEATORIO_MODULO2 PROC
-    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
-    INT 1AH
 
-    MOV AX, DX                     ; Coloca o valor do timer em AX
-    MOV DX, 0                      ; Limpa DX para a divisão
-    MOV BX, 2                      ; O divisor é 10 para limitar o valor de 0 a 1
-    DIV BX                         ; Divide AX por 2
-    MOV MOD2_ALEATORIO, DL   
-
-    RET 
-ALEATORIO_MODULO2 ENDP
 
 END MAIN
