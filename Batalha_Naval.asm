@@ -183,20 +183,6 @@ PPC MACRO
     POP AX
 ENDM
 
-CALCULO_DESLOCAMENTO MACRO
-    ; Calcula o deslocamento dentro da matriz 10x10
-    MOV AX, POS_LINHA      ; AX = linha
-    MOV BX, 10             ; Cada linha tem 10 colunas
-    MUL BX                 ; AX = linha * 10 (deslocamento da linha)
-    ADD AX, POS_COLUNA     ; AX = linha * 10 + coluna (deslocamento final)
-
-    ; Carregar o valor da posição na matriz
-    MOV SI, OFFSET TABULEIRO  ; SI aponta para o início da matriz
-    ADD SI, 648               ; 648 é a posição inicial do tabuleiro
-    ADD SI, AX                ; SI aponta para o elemento matriz[linha][coluna]
-ENDM
-
-
 .MODEL SMALL
 .STACK 100H
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -283,6 +269,7 @@ MAIN PROC
     CLEAR_SCREEN
     ENDL
 
+    ;MOSTRA A MATRIZ INICIAL NA TELA PARA O USUÁRIO
     CALL PRINT_MATRIZ
 
     ;TODO:
@@ -295,45 +282,25 @@ MAIN PROC
     ;verificar se as embarcações estão no mesmo lugar / estão separadas por 1 casa
     ;pedir ao player digitar as coordenadas de tiro
 
+
+    ATAQUE:
     CALL PEGAR_COORDENADAS 
 
     ;pula uma linha 
     ENDL
-
-    VERIFICAR_ATAQUE:
-    PUSH_ALL
-    ; Calcula o deslocamento dentro da matriz 10x10
-    CALCULO_DESLOCAMENTO
-;                                       ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
-    CMP BX, 1            ;compara com o tabuleiro que contém as embarcações
-    JE ACERTOU                          ; Se for 1, acertou a embarcação
-    JMP ERROU                           ; Se não, errou
-
-    ;######CONTINUAR DAQUI#######
-ACERTOU:
-    ; Atualiza o mapa para mostrar o acerto (marcar com outro símbolo, ex: 'X')
-    MOV WORD PTR [SI], 'X'           ; Marcar acerto com 'X'
-    JMP FIM_VERIFICACAO
-
-ERROU:
-    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
-    MOV WORD PTR [SI], "O"           ; Marcar erro com 'O'
+    CALL VERIFICAR_ATAQUE
     
-FIM_VERIFICACAO:
+    FIM_VERIFICACAO:
 
     ;IMPRIME A MATRIZ ATUALIZADA
     CALL PRINT_MATRIZ
 
     ;RETOMA O LOOP DE PEGAR COORDENADAS 
-    PROXIMO_TIRO:
+    PROXIMO_TIRO?:
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
-
-    CALL PEGAR_COORDENADAS ;vai para o próximo tiro
+    JMP ATAQUE
 
     ; Continue o jogo ou finalize se todas as embarcações forem destruídas
-
-
-
 
     ;verificar se as cordenadas estão dentro do mapa
     ;adicionar isso ao mapa
@@ -345,7 +312,7 @@ FIM_VERIFICACAO:
 FIM: 
     MOV AH, 4CH
     INT 21H
-MAIN ENDP
+ENDP MAIN
 
 ;=================PROCEDIMENTO DE TELA DE INICIAL================={
 ;
@@ -519,11 +486,12 @@ PEGAR_COORDENADAS PROC
     CMP AL, "9"
     JG FORA_DO_MAPA                     ; Linha maior que 9, fora do mapa
 
-    SUB AL, 29H                         ; converte para um valor numerico entre 1 e 10
+    XOR AH, AH                          ;REMOVE A PARTE QUE NÃO É NUMERO
+    AND AL, 0FH                         ;converte para um valor numerico entre 0 e 9
+    ADD AL, 2                           ;ADD 2 PARA FICAR ENTRE VALORES DE 2 A 11, PARA ENCAIXAR NA MULTIPLICAÇÃO DA MATRIZ QUE COMEÇA EM [64,8]
 ;                                       ; agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
-    MOV BX, 32                          ; multiplica por 32 pq EX: 1x32=32, 2x32=64
+    MOV BX, 32                          ; multiplica por 32 pq EX: 2x32=62, 3x32=96
     MUL BX                              ; DX:AX -> AX.BX
-    ADD AX, 32                          ; isso ocorre pq a matriz entra, de fato na posição 64
     MOV POS_LINHA, AX                   ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
 ;                                      ;zera ax e bx
@@ -542,10 +510,11 @@ PEGAR_COORDENADAS PROC
     CMP AL, "J"
     JG FORA_DO_MAPA                     ; Coluna maior que J, fora do mapa
 
-    SUB AL, 40H                         ; tira 40h para realizar as contas
+    XOR AH, AH                          ;REMOVE A PARTE QUE NÃO É LETRA
+    SUB AL, 41H                         ; tira 41h para transformar em numero de 0 a 9
+    ADD AL, 4                           ; add 4 pq o elemento começa agora na posição [64,8], logo o primeiro A=0+4x2=8
     MOV BX, 2                           ; multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
     MUL BX
-    ADD AX, 6                           ; soma 6 pq a matriz começa no 8, após a estilização
     MOV POS_COLUNA, AX                  ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
 ;                                       ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
@@ -559,5 +528,33 @@ PEGAR_COORDENADAS PROC
     INT 21H
     JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
 PEGAR_COORDENADAS ENDP
+
+VERIFICAR_ATAQUE PROC
+    PUSH_ALL
+    MOV AX, POS_LINHA      ; AX = linha
+    ADD AX, POS_COLUNA     ;(deslocamento final)
+
+    ; Carregar o valor da posição na matriz
+    LEA SI, TABULEIRO      ; SI aponta para o início da matriz
+    ADD SI, AX             ; SI aponta para o elemento matriz[linha][coluna]
+    MOV BX, [SI]
+;                                       ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
+    CMP BX, "1"                         ;compara com o tabuleiro que contém as embarcações (VERIFICAR ISSO DEPOIS PARA QUE SEJA COMPARADO COM OUTRO TABULEIRO)
+    JE ACERTOU                          ; Se for 1, acertou a embarcação
+    JMP ERROU                           ; Se não, errou
+
+    ;verificar se o tiro acertou a embarcação ou não
+    ;se acertou, marcar com cor diferente/X a embarcação
+ACERTOU:
+    ; Atualiza o mapa para mostrar o acerto (marcar com outro símbolo, ex: 'X')
+    MOV WORD PTR [SI], 'X'           ; Marcar acerto com 'X'
+    JMP FIM_VERIFICACAO
+
+ERROU:
+    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
+    MOV WORD PTR [SI], "O"           ; Marcar erro com 'O'
+    POP_ALL
+    RET
+VERIFICAR_ATAQUE ENDP
 
 END MAIN
