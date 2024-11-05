@@ -211,8 +211,8 @@ ENDM
 
     SUBMARINO   DW 31H,31H
 
-    HIDROAVAO   DW 1,1,1
-                DW 0,1,0
+    HIDROAVAO   DW 31h,31h,31h
+                DW 30h,31h,30h
    
 ;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
     CONTADOR EQU 208
@@ -244,10 +244,7 @@ ENDM
     POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
     MSG_ERRO_MAPA     DB 10, 13, "Coordenada inválidas, digite uma coordenada dentro do limite do mapa $"
-;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
-    CONTADOR EQU 208
-    FIM_LINHA EQU 30
-    ULTIMA_POS EQU 400
+
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
     NUM_ALEATORIO DW ?
@@ -259,7 +256,7 @@ ENDM
     RESULTADO_LINHA     DW ?
 
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO_MODULO2"
-    ;MOD2_ALEATORIO
+    MOD2_ALEATORIO DB ?
 .CODE 
 
 MAIN PROC
@@ -436,7 +433,6 @@ ALEATORIO PROC
     DIV BX                         ; Divide AX por 10
     MOV NUM_ALEATORIO, DX          ; Armazena o resto (0-9) em NUM_ALEATORIO
 
-    MOV RESULTADO, AX              ; Armazena o resultado em RESULTADO
     RET
 
 ALEATORIO ENDP
