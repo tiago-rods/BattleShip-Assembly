@@ -204,35 +204,180 @@ ENDM
     L8 DB 0BAh, 4 DUP(32), 0DBh,32,0DBh,0DBh,  32,32,  0DBh,0DBh,0DBh,0DBh,   32,32,  0DBh,32,32,0DBh,  32,32, 0DBh,0DBh,0DBh,0DBh,   32,32,   0DBh,32,32,32, 5 DUP(32), 0BAh, 13,10, "$"
     L9 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh, 13,10, "$"
    L10 DB 0C8h, 37 DUP(0CDh), 0BCh,  13,10, "$"
-;=================================== DEFINIÇÃO DE EMBARCAÇÕES
-    ENCOURACADO DW 31H,31H,31H,31H
 
-    FRAGATA     DW 31H,31H,31H
-
-    SUBMARINO   DW 31H,31H
-
-    HIDROAVAO   DW 31h,31h,31h
-                DW 30h,31h,30h
-   
-;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
-    CONTADOR EQU 208
-    FIM_LINHA EQU 30
-    ULTIMA_POS EQU 400
 
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
   TABULEIRO    DW 0C9h, 14 DUP(0CDh), 0BBh
                DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 10 DUP(30H), 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh       
+               DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh     
+
+
+TABULEIRO_AUX DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 10 DUP(?), 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 10 DUP(?), 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh    
+ 
+;==========================================================TABULEIROS ALEATÓRIOS
+TABULEIRO_0    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 73H,30H,30H,30H,30H,30H,48H,48H,48H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,48H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 46H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 46H, 30H,30H,53H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 46H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32,45H,45H,45H,45H, 30H ,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+TABULEIRO_1    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+               DW 0BAH, 32, 30H, 32,53H ,53H ,30H,30H,30H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,48H,48H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,68H,30h,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,68H,68H,68H,30h,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 45H,45H,45H,45H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+TABULEIRO_2    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+               DW 0BAH, 32, 30H, 32, 48H, 30H,30H,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 48H, 48H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 48H, 30H,30h,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAh 
+               DW 0BAH, 32, 33H, 32, 30H, 30H,46H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,46H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,46h,30H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,45H,45H,45H,45H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+TABULEIRO_3    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,48H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 48H,48H,48H,30H,30H,30H,45H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,30H,30H,45H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,45H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,45H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32,73H,73H, 30H ,30H,53H,30H,30H,30H,30H,68H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,30H,68H,68H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,68H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,46H,46H,46H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh
+
+TABULEIRO_4    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,48H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,48H,48H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,48H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 46H, 30H,30h,30h,30h,30h,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 46H, 30H,45H,45H,45H,45H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 46H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+
+TABULEIRO_5    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32,  46H,46H,46H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,68H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,68H,68H,68H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,45H,30H,30H,30H,30H,30H,53H,53H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,45H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,45H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,45H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 73H, 30h,30H,30H,30H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 73H, 30H,30H,30H,48H,48H,48H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh
+
+TABULEIRO_6    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,48H,48H,48H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 45H, 45H,45H,45H,30H,30H,30H,30H,48H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,46H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,46H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,53H,53H,30H,46H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,68H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,68H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+TABULEIRO_7    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 53H,53H,30H,30H,73H,30H,46H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,46H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 68H, 68H,68H,30H,30H,30H,30H,46H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 68H,30H,30H,30H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,48H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,48H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 45h, 45H,45H,45H,30h,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+TABULEIRO_8    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,45H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,45H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,48H,30H,30H,30H,30H,45H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,48H,48H,48H,30H,30H,30H,45H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,68H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 73H, 73H,30H,30H,30H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,46H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+
+TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
+               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,68H,68H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 32H, 32, 30H, 30H,46H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 33H, 32, 30H, 30H,46H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 34H, 32, 30H, 30H,46H,30H,30H,30H,30H,73H,73H,30H  , 32, 0BAH
+               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30h,30h,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,45H,45H,45H,45H,30H  , 32, 0BAH
+               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 38H, 32, 30H, 48H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
+               DW 0BAH, 32, 39H, 32, 48H, 48H,48H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+               DW 0C8h, 14 DUP(0CDh), 0BCh   
 ;======================================= OUTRAS STRINGS
 
     PTC DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
@@ -248,15 +393,13 @@ ENDM
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
     NUM_ALEATORIO DW ?
-    RESULTADO     DW ?
+    
+;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
 
-;====================================== STRING PARA PROCEDIMENTO "ALEATORIO_LINHA"
+    CONTADOR EQU 208
+    FIM_LINHA EQU 30
+    ULTIMA_POS EQU 400
 
-    NUM_ALEATORIO_LINHA DW ?
-    RESULTADO_LINHA     DW ?
-
-;====================================== STRING PARA PROCEDIMENTO "ALEATORIO_MODULO2"
-    MOD2_ALEATORIO DB ?
 .CODE 
 
 MAIN PROC
@@ -357,10 +500,7 @@ TELA_INICIAL PROC
 
     RET
 TELA_INICIAL ENDP
-
-
-
-;----------PROCEDIMENTO PARA IMPRIMIR MATRIZ--------{
+;===================PROCEDIMENTO PARA IMPRIMIR MATRIZ==================={
 ;
 ;  FUNÇÃO DO PROCEDIMENTO: IMPRIMIR MATRIZ DE 16BITS,(DW)
 ;
@@ -370,7 +510,7 @@ TELA_INICIAL ENDP
 ;
 ;  NOME: PRINT_MATRIZ
 ;
-;----------PROCEDIMENTO PARA IMPRIMIR MATRIZ--------}
+;===================PROCEDIMENTO PARA IMPRIMIR MATRIZ===================}
 PRINT_MATRIZ PROC
     PUSH_ALL
 
@@ -437,59 +577,6 @@ ALEATORIO PROC
 
 ALEATORIO ENDP
 
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA================={
-;
-;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 9, O QUAL É MULTIPLICADO 
-;  POR 32 POIS ESTE INDICA O NÚMERO INICIAL DE LINHAS DA MATRIZ TABULEIRO,
-;  ASSIM POSICIONA EMBARCAÇÕES DE FORMA ALEATÓRIA ENTRE AS LINHAS DO TABULEIRO
-;
-;  COMO USAR: CHAMAR QUANDO PRECISAR POSICIONAR EMBARCAÇÕES AO COMEÇO DO JOGO
-;
-;  COMO FUNCIONA: GERA UM NÚMERO ALEATÓRIO ENTRE 0 E 9 COM A INTERRUPÇÃO 1AH
-;  DIVIDE POR 10 PARA GERAR ESTE NÚMERO EX X % 10 = 0<=X<=9 * 32
-;
-;  PROCEDIMENTOS CHAMADOS: ALEATORIO
-;
-;  NOME: ALEATORIO_LINHA
-; 
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO PARA LINHA=================}
-ALEATORIO_LINHA PROC
-    CALL ALEATORIO
-
-    MOV NUM_ALEATORIO_LINHA, DL    ; Número aleatório (0-9) armazenado em DL
-    MOV AL, NUM_ALEATORIO_LINHA    ; Move o número aleatório para AL
-    MOV BL, 32                     ; Multiplicador
-    MUL BL                         ; Multiplica AL (número aleatório) por BL (32)
-    ADD AX, 64
-
-    MOV RESULTADO_LINHA, AX        ; Armazena o resultado em RESULTADO
-    RET
-ALEATORIO_LINHA ENDP
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2================={
-;
-;  FUNÇÃO: GERAR UM NÚMERO ALEATÓRIO ENTRE 0 E 1
-;
-;  COMO USAR: USADO PARA DEFINIR SE A EMBARCAÇÃO TERÁ ORIENTAÇÃO VERTICAL OU HORIZONTAL
-;
-;  COMO FUNCIONA: GERA UM NÚMERO ALEATÓRIO E DIVIDE POR MODULO 2, EX: X % 2 = 0<=X<=1, NUM NATURAL
-;
-;  PROCEDIMENTOS CHAMADOS: NENHUM
-;
-;  NOME: ALEATORIO_MODULO2
-; 
-;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO EM MÓDULO 2=================}
-ALEATORIO_MODULO2 PROC
-    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
-    INT 1AH
-
-    MOV AX, DX                     ; Coloca o valor do timer em AX
-    MOV DX, 0                      ; Limpa DX para a divisão
-    MOV BX, 2                      ; O divisor é 10 para limitar o valor de 0 a 1
-    DIV BX                         ; Divide AX por 2
-    MOV MOD2_ALEATORIO, DL   
-
-    RET 
-ALEATORIO_MODULO2 ENDP
 
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR================={
 ;
@@ -498,7 +585,7 @@ ALEATORIO_MODULO2 ENDP
 ;  
 ;  COMO USAR: CHAMAR QUANDO O JOGADOR FOR ATACAR
 ;
-;   NOME: PEGAR_COORDENADAS
+;  NOME: PEGAR_COORDENADAS
 ;
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR=================}
 PEGAR_COORDENADAS PROC
@@ -546,7 +633,6 @@ PEGAR_COORDENADAS PROC
     MOV POS_COLUNA, AX                  ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
 ;                                       ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
-    
 ;                                       ; Se as coordenadas estão no limite do mapa, continue o programa
     RET
     FORA_DO_MAPA:
@@ -556,265 +642,157 @@ PEGAR_COORDENADAS PROC
     INT 21H
     JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
     
-ENDP PEGAR_COORDENADAS
-;+++++++++PROCEDIMENTOS EM PROGRESSO++++++++++++
+PEGAR_COORDENADAS ENDP
 
-;================ PROCEDIMENTO POSICIONAR_EMBARCACOES ================={
+;=================TABULEIRO PSEUDOALEATÓRIO===================={
 ;
-; FUNÇÃO: POSICIONA EMBARCAÇÕES NO TABULEIRO EM POSIÇÕES ALEATÓRIAS
+;   O QUE FAZ: GERA UM TABULEIRO COM EMBARCAÇÕES POSICIONADAS 
+;   PSEUDOALEATÓRIAMENTE
+;   
+;   COMO FAZ: GERA UM NUMERO ALEATORIO, E FAZ UM SWITCH CASE, 
+;   DEPENDENDO DE QUAL NÚMERO CAIR, USA UM PRESET DIFERENTE
+;   DE TABULEIRO
 ;
-; COMO USAR: CHAMAR AO INÍCIO DO JOGO PARA COLOCAR AS EMBARCAÇÕES
+;   PROCEDIMENTOS CHAMADOS: ALEATORIO
 ;
-; COMO FUNCIONA: PEGA CADA EMBARCAÇÃO E ENVIA PARA OUTRO PROCEDIMENTO 
-; O QUAL POSICIONA ALEATÓRIAMENTE ESTA EMBARCAÇÃO
+;   NOME: GERA_TABULEIRO 
 ;
-; PROCEDIMENTOS CHAMADOS: COLOCAR_EMBARCACAO
-;
-; NOME: POSICIONAR_EMBARCACOES
-;
-;================ PROCEDIMENTO POSICIONAR_EMBARCACOES =================}
-POSICIONAR_EMBARCACOES PROC
+;=================TABULEIRO PSEUDOALEATÓRIO=====================}
+
+GERA_TABULEIRO PROC
     PUSH_ALL
 
-    ; Posiciona o Encouraçado
-    MOV CX, 4
-    MOV DI, OFFSET ENCOURACADO         ; Ponteiro para o primeiro bloco do Encouraçado
-    CALL COLOCAR_EMBARCACAO
+SWITCH:
+    CALL ALEATORIO ;PEGA NUMERO ALEATÓRIO
 
-    ; Posiciona a Fragata
-    MOV CX, 3
-    MOV DI, OFFSET FRAGATA             ; Ponteiro para o primeiro bloco da Fragata
-    CALL COLOCAR_EMBARCACAO
+    MOV AX, NUM_ALEATORIO ;ARMAZENA O NUMERO ALEATÓRIO EM AX
 
-    ; Posiciona o Submarino
-    MOV CX, 2
-    MOV DI, OFFSET SUBMARINO           ; Ponteiro para o primeiro bloco do Submarino
-    CALL COLOCAR_EMBARCACAO
+    ; COMPARA AX COM 0 A 9, PARA VER QUAL CASO UTILIZAR
+    CMP AX, 0
+    JZ CASE_0
+    CMP AX, 1
+    JE CASE_1
+    CMP AX, 2
+    JE CASE_2
+    CMP AX, 3
+    JE CASE_3
+    CMP AX, 4
+    JE CASE_4
+    CMP AX, 5
+    JE CASE_5
+    CMP AX, 6
+    JE CASE_6
+    CMP AX, 7
+    JE CASE_7
+    CMP AX, 8
+    JE CASE_8
+    CMP AX, 9
+    JE CASE_9
 
-    ; Posiciona o Hidroavião
-    MOV CX, 6
-    MOV DI, OFFSET HIDROAVIAO          ; Ponteiro para o primeiro bloco do Hidroavião
-    CALL COLOCAR_EMBARCACAO
+    ;JMP DEFAULT deixa JE CASE_9 fora de alcance
+    ;CASOS DE 0 A 9, CADA CASO UTILIZA UM TABULEIRO DIFERENTE
+    ;COMO FAZ ISSO:
+    ;MOVE PARA SI STRING A SER COPIADA
+    ;MOVE PARA DI STRING QUE RECEBERA A STRING EM SI
+    ;CX RECEBE O TAMANHO DA STRING, PARA SABER QUANTOS ELEMENTOS COPIAR
+    ;UTILIZA REP MOVSW PARA COPIAR STRING EM OUTRA
+CASE_0:
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_0 
+    MOV DI, OFFSET TABULEIRO_AUX
 
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_1:
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_1
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_2:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_2
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_3:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_3
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_4:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_4
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_5:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_5
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_6:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_6
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_7:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_7
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_8:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_8
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+CASE_9:
+
+    MOV CX, CONTADOR
+    MOV SI, OFFSET TABULEIRO_9
+    MOV DI, OFFSET TABULEIRO_AUX
+
+    REP MOVSW
+    JMP END_SWITCH
+
+;DEFAULT:
+
+;   JMP SWITCH ;FICA FORA DE ALCANCE CASO DEFINIDO, LOGO EVITEI UTILIZAR
+
+END_SWITCH:
+    ; FINALIZA O PROCEDIMENTO
     POP_ALL
     RET
-POSICIONAR_EMBARCACOES ENDP
 
-;================ PROCEDIMENTO COLOCAR AS EMBARCAÇÕES ================={
-;
-; FUNÇÃO: COLOCAR UMA EMBARCAÇÃO ESPECIFICADA NO PROCEDIMENTO ANTERIOR
-; EM UMA POSIÇÃO ALEATORIA NO TABULEIRO
-;
-; COMO USAR: PASSAR O NOME DA EMBARCAÇÃO COMO "PARÂMETRO", E CHAMAR
-; OUTROS PROCEDIMENTOS OS QUAIS: GEREM UMA COORDENADA ALEATORIA, 
-; VERIFICAM A DISPONIBILIDADE DESTA COORDENADA E POSICIONA O BLOCO
-; DA EMBARCAÇÃO
-;
-; COMO FUNCIONA: PEGA O NOME DA EMBARCAÇÃO, GERA UMA COORDENADA, VE-
-; RIFICA A COORDENADA DESTA EMBARCAÇÃO E POSICIONA A EMBARCAÇÃO,
-; PASSA CX COMO "PARÂMETRO" E ESTE É O TAMANHO DE POSIÇÕES DA EMBARCAÇÃO
-;
-; PROCEDIMENTOS USADOS: GERAR_COORDENADA_ALEATORIA, VERIFICAR_DISPONIBILIDADE
-; POSICIONAR_BLOCOS
-;
-; NOME: COLOCAR_EMBARCAÇÃO
-;
-;================ PROCEDIMENTO COLOCAR AS EMBARCAÇÕES =================}
-
-; Procedimento para colocar uma embarcação específica nas coordenadas aleatórias
-COLOCAR_EMBARCACAO PROC
-PROXIMA_POSICAO:
-    CALL GERAR_COORDENADA_ALEATORIA      ; Gera posição aleatória inicial em DX
-    CALL POSICIONAR_BLOCOS                ; Posiciona os blocos da embarcação partindo de DI
-    CALL VERIFICAR_DISPONIBILIDADE       ; Verifica se a posição inicial é válida
-
-    CMP AX, 1                             ; AX = 1 se posição é válida
-    JNE PROXIMA_POSICAO                   ; Tenta outra posição se for inválida
-
-    ; Posiciona a embarcação
-
-    RET
-COLOCAR_EMBARCACAO ENDP
-
-;================ PROCEDIMENTO PARA POSICIONAR BLOCOS DAS EMBARCAÇÕES ================={
-;
-; FUNÇÃO: GERA UMA ORIENTAÇÃO: VERTICAL OU HORIZONTAL, PARA A EMBARCAÇÃO E A POSICIONA
-;
-; COMO USAR: CHAMA-LA DENTRO DE "COLOCAR_EMBARCACAO" E VERIFICAR SE O POSICIONAMENTO 
-; DOS BLOCOS É VALIDO 
-;
-; COMO FUNCIONA: GERA UM NÚMERO ENTRE 0 E 1, CASO SEJA 0, A ORIENTAÇÃO SERA HORIZONTAL
-; CASO CONTRARIO SERÁ VERTICAL, FAZ 2 LOOPS PARA POSICIONAR OS BLOCOS DA EMBARCAÇÃO,
-; UM PARA VERTICAL E UM PARA HORIZONTAL
-;
-; PROCEDIMENTOS USADOS: NENHUM
-;
-; NOME: POSICIONAR_BLOCOS
-;
-;================ PROCEDIMENTO PARA POSICIONAR BLOCOS DAS EMBARCAÇÕES =================}
-
-POSICIONAR_BLOCOS PROC
-    PUSH SI                ; Salva SI (para preservar o ponteiro do bloco atual)
-    PUSH DX                ; Salva DX (coordenada inicial)
-    PUSH BX                ; Salva BX (para calcular o deslocamento)
-    
-    MOV SI, DI             ; SI aponta para o primeiro bloco da embarcação
-    MOV BX, DX             ; BX é a posição inicial no tabuleiro
-
-    CALL ALEATORIO_MODULO2
-    MOV DIRECAO, DL
-
-    ; Verifica direção de posicionamento
-    CMP DIRECAO, 0
-    JE POSICAO_HORIZONTAL
-
-POSICAO_VERTICAL:
-    ; Posiciona a embarcação verticalmente
-    MOV AX, 32             ; 32 bytes para mover para a próxima linha (considerando 32 colunas por linha)
-
-POSICIONAR_LOOP_VERTICAL:
-    MOV TABULEIRO[BX], [SI] ; Coloca o bloco da embarcação na posição atual
-    ADD BX, AX              ; Move para a próxima linha no tabuleiro (verticalmente)
-    ADD SI, 2               ; Avança para o próximo bloco da embarcação
-    LOOP POSICIONAR_LOOP_VERTICAL
-    JMP FIM_POSICIONAR_BLOCOS
-
-POSICAO_HORIZONTAL:
-    ; Posiciona a embarcação horizontalmente
-    MOV AX, 2               ; Move uma posição para a direita (2 bytes por posição)
-
-POSICIONAR_LOOP_HORIZONTAL:
-    MOV TABULEIRO[BX], [SI] ; Coloca o bloco da embarcação na posição atual
-    ADD BX, AX              ; Move para a próxima coluna no tabuleiro (horizontalmente)
-    ADD SI, 2               ; Avança para o próximo bloco da embarcação
-    LOOP POSICIONAR_LOOP_HORIZONTAL
-
-FIM_POSICIONAR_BLOCOS:
-    POP BX
-    POP DX
-    POP SI
-    RET
-POSICIONAR_BLOCOS ENDP
-
-;================= PROCEDIMENTO GERAR_COORDENADA_ALEATORIA ================={
-;
-; FUNÇÃO: GERA COORDENADAS ALEATÓRIAS PARA POSICIONAR AS EMBARCAÇÕES
-;
-; COMO USAR: CHAMAR QUANDO PRECISAR DE COORDENADAS ALEATÓRIAS
-;
-; COMO FUNCIONA: GERA UMA LINHA ALEATÓRIA ENTRE 0 E 9 (CADA LINHA COME-
-; ÇA COM MÚLTIPLOS DE 32) E COLUNAS ALEATÓRIAS ENTRE 0 E 9 E SOMA AMBAS
-; COORDENADAS PARA GERAR UMA POSIÇÃO NA MATRIZ TABULEIRO
-; OBS: ALGO PARA INCLUIR, O NÚMERO NÃO PODE SER EQUIVALENTE A NENHUMA 
-; DAS 2 PRIMEIRAS LINHAS E NEM A ULTIMA E TAMBÉM NENHUMA DAS 4 PRIMEIRAS 
-; COLUNAS NEM NA ULTIMA
-;
-; PROCEDIMENTOS CHAMADOS: ALEATORIO_LINHA, ALEATORIO.
-;
-;================= PROCEDIMENTO GERAR_COORDENADA_ALEATORIA =================}
-GERAR_COORDENADA_ALEATORIA PROC
-    ;TODO: FAZER COM QUE NÃO SEJA NENHUMA DAS 2 PRIMEIRAS LINHAS, NEM A ÚLTIMA E FAZER COM QUE NÃO SEJA NENHUMA DAS 4 PRIMEIRAS LINHAS, NEM A ÚLTIMA
-    ; Gera linha aleatória entre 0 e 9
-    CALL ALEATORIO_LINHA             ; Chama um procedimento para gerar linha aleatória
-    MOV AX, NUM_ALEATORIO_LINHA      ; Resultado da linha está em AX
-    
-    ; Gera coluna aleatória entre 0 e 9
-    CALL ALEATORIO                   ; Chama ALEATORIO para gerar coluna
-    ADD AX, 4
-    ADD AX, NUM_ALEATORIO            ; Soma com a linha
-    
-    ; Multiplica por 32 para ajustar a posição correta no tabuleiro
-    SHL AX, 5                        ; Multiplica por 32
-    MOV DX, AX                       ; Move para DX, que agora contém a posição inicial
-
-    RET
-GERAR_COORDENADA_ALEATORIA ENDP
-
-;================= PROCEDIMENTO VERIFICAR_DISPONIBILIDADE =================={
-;
-; FUNÇÃO: VERIFICA SE A POSIÇÃO ESTÁ DISPONÍVEL, E COMPARA COM AS ADJACEN-
-; TES PARA VER SE ESTAS TAMBÉM NÃO ESTÃO OCUPADAS
-; OBS: TOMAR CUIDADO PARA NÃO COMPARAR COM POSIÇÃO DA PRÓPRIA EMBARCAÇÃO
-; E CAUSAR UM ERRO
-;
-; COMO USAR: CHAMAR ANTES DE POSICIONAR UMA EMBARCAÇÃO. 
-; O ENDEREÇO PARA VERIFICAÇÃO DEVE SER PASSADO POR BP E COLOCADO EM BX.
-;
-; COMO FUNCIONA: VERIFICA SE A POSIÇÃO ESTÁ OCUPADA, E COMPARA COM AS POSI-
-; ÇÕES ADJACENTES, SE NÃO ESTIVER OCUPADA, RETORNA 1, SE ESTIVER OCUPADA RETORNA 0
-;
-; NOME: VERIFICAR_DISPONIBILIDADE
-;
-;================= PROCEDIMENTO VERIFICAR_DISPONIBILIDADE ==================}
-VERIFICAR_DISPONIBILIDADE PROC
-    PUSH BX
-    MOV BX, BP                           ; Move valor de BP para BX
-    MOV AX, TABULEIRO[BX]                ; Verifica a posição atual
-
-    ; Verifica se a posição está ocupada
-    CMP AX, 30H                          ; Se a posição é livre (30H)
-    JNE POSICAO_INVALIDA                 ; Se não é livre, posição inválida
-
-    ; Verifica a proximidade
-    MOV BX, DX
-
-    ; Verifica todas as posições adjacentes
-    ; Superior
-    CMP TABULEIRO[BX - 32], 30H         ; Verifica acima (linha anterior)
-    JNE POSICAO_INVALIDA
-
-    ; Inferior
-    CMP TABULEIRO[BX + 32], 30H         ; Verifica abaixo (linha seguinte)
-    JNE POSICAO_INVALIDA
-
-    ; Esquerda
-    CMP TABULEIRO[BX - 2], 30H          ; Verifica à esquerda
-    JNE POSICAO_INVALIDA
-
-    ; Direita
-    CMP TABULEIRO[BX + 2], 30H          ; Verifica à direita
-    JNE POSICAO_INVALIDA
-
-    ; Se todas as verificações passarem
-POSICAO_VALIDA:
-    MOV AX, 1                            ; Posição válida
-    JMP FINALIZAR_VERIFICACAO
-
-POSICAO_INVALIDA:
-    XOR AX, AX                            ; Posição inválida
-
-FINALIZAR_VERIFICACAO:
-    POP DX
-    RET
-VERIFICAR_DISPONIBILIDADE ENDP
-
-
-VERIFICAR_ATAQUE PROC
-    PUSH_ALL
-    MOV AX, POS_LINHA      ; AX = linha
-    ADD AX, POS_COLUNA     ;(deslocamento final)
-
-    ; Carregar o valor da posição na matriz
-    LEA SI, TABULEIRO      ; SI aponta para o início da matriz
-    ADD SI, AX             ; SI aponta para o elemento matriz[linha][coluna]
-    MOV BX, [SI]
-;                                       ;Verifica se a célula contém uma embarcação (por exemplo, valor 1)
-    CMP BX, "1"                         ;compara com o tabuleiro que contém as embarcações (VERIFICAR ISSO DEPOIS PARA QUE SEJA COMPARADO COM OUTRO TABULEIRO)
-    JE ACERTOU                          ; Se for 1, acertou a embarcação
-    JMP ERROU                           ; Se não, errou
-
-    ;verificar se o tiro acertou a embarcação ou não
-    ;se acertou, marcar com cor diferente/X a embarcação
-ACERTOU:
-    ; Atualiza o mapa para mostrar o acerto (marcar com outro símbolo, ex: 'X')
-    MOV WORD PTR [SI], 'X'           ; Marcar acerto com 'X'
-    JMP FIM_VERIFICACAO
-
-ERROU:
-    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
-    MOV WORD PTR [SI], "O"           ; Marcar erro com 'O'
-    POP_ALL
-    RET
-VERIFICAR_ATAQUE ENDP
+GERA_TABULEIRO ENDP
 
 END MAIN
