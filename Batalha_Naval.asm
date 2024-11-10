@@ -666,6 +666,19 @@ PEGAR_COORDENADAS PROC
     MOV AH, 01H                         ; pega o caractere
     INT 21h
 
+        
+        ; Verifica se a coluna é uma letra minúscula (a-j)
+    CMP AL, "a"
+    JL CONTINUAR
+    CMP AL, "j"
+    JG CONTINUAR
+
+    ; Converte letra minúscula para maiúscula
+    SUB AL, 20H
+
+CONTINUAR:
+
+
 ;                                       ; Verifica se a coluna está dentro do limite (A a J)
     CMP AL, "A"
     JL FORA_DO_MAPA                     ; Coluna menor que A, fora do mapa
