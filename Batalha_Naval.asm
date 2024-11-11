@@ -405,6 +405,26 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 
     PTC DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
 
+;======================================= STRINGS PARA MANUAL DE INSTRUÇÃO
+
+    TITULO_MANUAL DB 'Manual de Regras:$'
+    LINHA1 DB '1. O jogo e jogado em um tabuleiro de 10x10.$'
+    LINHA2 DB '2. 6. Se um ataque acerta uma embarcacao, a posicao e $'
+    LINHA3 DB 'marcada com o simbolo da embarcacao.  $'
+    LINHA4 DB '3. Existem diferentes tipos de embarcacoes:$'
+    LINHA5 DB '   - Fragata (f)$'
+    LINHA6 DB '   - Encoracado (e)$'
+    LINHA7 DB '   - Submarino (S/s)$'
+    LINHA8 DB '4. .$'
+    LINHA9 DB '5. Um ataque e feito especificando uma linha (0-9) $'
+    LINHA10 DB 'e uma coluna (A-J).$'
+    LINHA11 DB '7. Se um ataque erra, a posicao e marcada com "O".$'
+    LINHA12 DB '8. $'
+    LINHA13 DB '9. Quando o jogador afundar todas as embarcacoes ele vence.$'
+    LINHA14 DB '10. O jogador pode jogar novamente se quiser.$'
+
+    ; Terminar as regras do jogo
+
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
     MSG_ATAQUE_LINHA  DB 10, 13, "Digite o numero da linha para o ataque: $"
@@ -412,6 +432,12 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
     MSG_ERRO_MAPA     DB 10, 13, "Coordenada inválidas, digite uma coordenada dentro do limite do mapa $"
+  
+
+;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
+
+    MSG_FIM_JOGO     DB 10, 13, "Fim de jogo. Deseja jogar novamente? $"
+    MSG_ERRO_FIM_JOGO DB 10, 13, "Opcao invalida. Digite S para sim ou N para nao: $"
 
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
@@ -445,6 +471,10 @@ MAIN PROC
 
     JOGAR:
     CALL TELA_INICIAL
+
+    CALL MANUAL_INSTRUCAO
+
+
     ;FAZER UM MANUAL DE INSTRUÇÃO DO JOGO, DIZENDO QUANTAS EMBARCAÇOES TEM E QUAIS SAO...
     CLEAR_SCREEN
     ENDL
@@ -500,9 +530,8 @@ MAIN PROC
     ;se acertou todas, finalizar o jogo
     ;jogar denovo?
 
-FIM_JOGO: 
-    MOV AH, 4CH
-    INT 21H
+
+
 ENDP MAIN
 
 ;=================PROCEDIMENTO DE TELA DE INICIAL================={
@@ -548,6 +577,57 @@ TELA_INICIAL PROC
 
     RET
 TELA_INICIAL ENDP
+
+
+;=================PROCEDIMENTO DE MANUAL DE INSTRUÇÃO================={
+;
+;  FUNÇÃO: MOSTRAR O MANUAL DE INTRUÇÃO DO JOGO
+;
+;  COMO USAR: CHAMAR O PROCEDIMENTO AO INICIO DO CODIGO SOMENTE
+;  
+;  NOME: MANUAL_INSTRUCAO
+;
+;=================PROCEDIMENTO DE MANUAL DE INSTRUÇÃO=================}
+MANUAL_INSTRUCAO PROC
+        CLEAR_SCREEN
+
+        ; IMPRIMIR MANUAL DE INSTRUÇÕES
+        POS_CURSOR 5, 18
+        PRINTS TITULO_MANUAL
+        POS_CURSOR 6, 18
+        PRINTS LINHA1
+        POS_CURSOR 7, 18
+        PRINTS LINHA2
+        POS_CURSOR 8, 18
+        PRINTS LINHA3
+        POS_CURSOR 9, 18
+        PRINTS LINHA4
+        POS_CURSOR 10, 18
+        PRINTS LINHA5
+        POS_CURSOR 11, 18
+        PRINTS LINHA6
+        POS_CURSOR 12, 18
+        PRINTS LINHA7
+        POS_CURSOR 13, 18
+        PRINTS LINHA8
+        POS_CURSOR 14, 18
+        PRINTS LINHA9
+        POS_CURSOR 15, 18
+        PRINTS LINHA10
+        POS_CURSOR 16, 18
+        PRINTS LINHA11
+        POS_CURSOR 17, 18
+        PRINTS LINHA12
+        POS_CURSOR 18, 18
+        PRINTS LINHA13
+        POS_CURSOR 19, 18
+        PRINTS LINHA14
+        POS_CURSOR 20, 18
+        PRINTS PTC
+        PPC
+
+        RET
+MANUAL_INSTRUCAO ENDP
 ;===================PROCEDIMENTO PARA IMPRIMIR MATRIZ==================={
 ;
 ;  FUNÇÃO DO PROCEDIMENTO: IMPRIMIR MATRIZ DE 16BITS,(DW)
@@ -666,7 +746,7 @@ PEGAR_COORDENADAS PROC
     MOV AH, 01H                         ; pega o caractere
     INT 21h
 
-        
+    
         ; Verifica se a coluna é uma letra minúscula (a-j)
     CMP AL, "a"
     JL CONTINUAR
@@ -677,7 +757,6 @@ PEGAR_COORDENADAS PROC
     SUB AL, 20H
 
 CONTINUAR:
-
 
 ;                                       ; Verifica se a coluna está dentro do limite (A a J)
     CMP AL, "A"
@@ -993,5 +1072,58 @@ FIM_AFUNDOU:
     RET
 
 VERIFICA_AFUNDOU ENDP
+
+;=================PROCEDIMENTO DE VERIFICAÇÃO DE FIM DE JOGO================={
+;
+;  FUNÇÃO: VERIFICAR SE AINDA EXISTE EMBARCAÇÃO E SE O JOGADOR DESEJA JOGAR NOVAMENTE
+;
+;  COMO FAZ: PARA CADA EMBARCAÇÃO ATINGIDA, ADICIONAR UM CONTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA. 
+;
+;  NOME: VERIFICA_FIM_JOGO
+;
+;=================PROCEDIMENTO DE VERIFICAÇÃO DE FIM DE JOGO=================}  
+
+VERIFICA_FIM_JOGO PROC
+
+
+
+    ;MOSTRA MENSAGEM DE JOGO ACABADO
+    PRINTS MSG_FIM_JOGO
+JMP VERIFICA_RESPOSTA_FIM_JOGO
+
+ERRO_FIM_JOGO:
+
+PRINTS MSG_ERRO_FIM_JOGO
+
+VERIFICA_RESPOSTA_FIM_JOGO:
+
+    MOV AH, 01
+    INT 21H
+
+                ; Verifica se é letra minúscula (s ou n)
+    CMP AL, "s"
+    JNE CONTINUAR1
+    CMP AL, "n"
+    JNE CONTINUAR1
+    ; Converte letra minúscula para maiúscula
+    SUB AL, 20H
+
+CONTINUAR1:
+
+    CMP AL, 'S'
+   ; JE JOGAR (TERMINAR ESSA PARTE AINDA)
+    CMP AL, 'N'
+    JE FIM_JOGO
+
+    JMP ERRO_FIM_JOGO
+
+   FIM_JOGO:
+   MOV AH, 4Ch
+   INT 21H; FINALIZA O PROGRAMA
+    
+
+    RET
+VERIFICA_FIM_JOGO ENDP
+
 
 END MAIN
