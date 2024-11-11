@@ -462,6 +462,8 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     FRAGATA_AFUNDOU_MSG DB "Voce afundou uma Fragata!! $"
     SUBMARINO_AFUNDOU_MSG DB "Voce afundou um Submarino!! $"
     HIDROAVIAO_AFUNDOU_MSG DB "Voce afundou um Hidroaviao!! $"
+;=======================VARIAVEL QUE DEFINE FIM DE JOGO========================
+    VAR_FIM_DE_JOGO DB 0 ;ESSA VARIAVEL DEFINE O FIM DO JOGO, SE ELA FOR ZERO O JOGO ACABA E SE ELA FOR UM O JOGO CONTINUA.
 .CODE 
 
 MAIN PROC
@@ -523,9 +525,14 @@ MAIN PROC
     ;se acertou todas, finalizar o jogo
     ;jogar denovo?
 
-    CALL VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO. O 4CH ESTA DENTRO DESSE PROCEDIMENTO
+    CALL VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
+    CMP VAR_FIM_DE_JOGO, 1
+    JE JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
     
-
+    FIM_DE_JOGO:
+    MOV AH, 4CH
+    INT 21H
+    
 ENDP MAIN
 
 ;=================PROCEDIMENTO DE TELA DE INICIAL================={
@@ -1078,8 +1085,7 @@ VERIFICA_AFUNDOU ENDP
 ;=================PROCEDIMENTO DE VERIFICAÇÃO DE FIM DE JOGO=================}  
 
 VERIFICA_FIM_JOGO PROC
-
-
+PUSH_ALL
 
     ;MOSTRA MENSAGEM DE JOGO ACABADO
     PRINTS MSG_FIM_JOGO
@@ -1089,32 +1095,34 @@ ERRO_FIM_JOGO:
 PRINTS MSG_ERRO_FIM_JOGO
 
 VERIFICA_RESPOSTA_FIM_JOGO:
-
     MOV AH, 01
     INT 21H
 
-                ; Verifica se é letra minúscula (s ou n)
-    CMP AL, "s"
-    JNE CONTINUAR1
-    CMP AL, "n"
-    JNE CONTINUAR1
+        ; Verifica se a coluna é uma letra minúscula (a-z)
+    CMP AL, "a"
+    JL CONTINUAR1
+    CMP AL, "z"
+    JG CONTINUAR1
+
     ; Converte letra minúscula para maiúscula
     SUB AL, 20H
-
 CONTINUAR1:
 
     CMP AL, 'S'
-   ; JE JOGAR (TERMINAR ESSA PARTE AINDA)
+    JE CONTINUAR_JOGO
     CMP AL, 'N'
-    JE FIM_JOGO
+    JE PARAR_JOGO
 
     JMP ERRO_FIM_JOGO
 
-   FIM_JOGO:
-   MOV AH, 4Ch
-   INT 21H; FINALIZA O PROGRAMA
-    
+   PARAR_JOGO:
+    MOV VAR_FIM_DE_JOGO, 0
+    POP_ALL
+    RET
 
+    CONTINUAR_JOGO:
+    MOV VAR_FIM_DE_JOGO, 1
+    POP_ALL
     RET
 VERIFICA_FIM_JOGO ENDP
 
