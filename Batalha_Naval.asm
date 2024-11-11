@@ -431,13 +431,13 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     MSG_ATAQUE_COLUNA DB 10, 13, "Digite o numero da coluna para o ataque: $"
     POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
-    MSG_ERRO_MAPA     DB 10, 13, "Coordenada inválidas, digite uma coordenada dentro do limite do mapa $"
+    MSG_ERRO_MAPA     DB 10, 13, "Coordenada invalidas, digite uma coordenada dentro do limite do mapa $"
   
 
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
 
-    MSG_FIM_JOGO     DB 10, 13, "Fim de jogo. Deseja jogar novamente? $"
-    MSG_ERRO_FIM_JOGO DB 10, 13, "Opcao invalida. Digite S para sim ou N para nao: $"
+    MSG_FIM_JOGO     DB "Fim de jogo. Deseja jogar novamente (S/N)? $"
+    MSG_ERRO_FIM_JOGO DB "Opcao invalida. Digite S para sim ou N para nao: $"
 
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
@@ -1088,10 +1088,13 @@ VERIFICA_FIM_JOGO PROC
 PUSH_ALL
 
     ;MOSTRA MENSAGEM DE JOGO ACABADO
+    CLEAR_SCREEN
+    POS_CURSOR 12, 18
     PRINTS MSG_FIM_JOGO
 JMP VERIFICA_RESPOSTA_FIM_JOGO
 
 ERRO_FIM_JOGO:
+POS_CURSOR 13, 15
 PRINTS MSG_ERRO_FIM_JOGO
 
 VERIFICA_RESPOSTA_FIM_JOGO:
