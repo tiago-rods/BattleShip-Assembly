@@ -409,7 +409,7 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 
     TITULO_MANUAL DB 'Manual de Regras:$'
     LINHA1 DB '1. O jogo e jogado em um tabuleiro de 10x10.$'
-    LINHA2 DB '2. 6. Se um ataque acerta uma embarcacao, a posicao e $'
+    LINHA2 DB '2. Se um ataque acerta uma embarcacao, a posicao e $'
     LINHA3 DB 'marcada com o simbolo da embarcacao.  $'
     LINHA4 DB '3. Existem diferentes tipos de embarcacoes:$'
     LINHA5 DB '   - Fragata (f)$'
