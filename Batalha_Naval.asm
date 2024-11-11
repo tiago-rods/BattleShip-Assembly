@@ -126,7 +126,7 @@ PRINTC MACRO CHAR
     PUSH DX
     PUSH AX
     MOV AH, 2
-    MOV DL, CHAR
+    MOV DX, CHAR
     INT 21h
     POP AX
     POP DX
@@ -203,30 +203,83 @@ AFUNDOU MACRO COUNTER, COMPARADO, STRING
 
 ENDM
 
+PRINT_COR MACRO STRING, COR
+PUSH SI
+PUSH BX 
+
+    LEA SI, STRING
+    MOV BL, COR
+    CALL MUDA_COR
+
+POP BX
+POP SI
+ENDM
+
+   TAB MACRO N                 ;Macro feita para dar TAB (dar espaco da lateral) na tela de saida.
+        PUSH AX
+        PUSH BX
+        PUSH CX 
+        PUSH DX
+        
+        MOV AH, 3
+        MOV BH, 0
+        INT 10h
+        
+        MOV AH, 2
+        ADD DL, N 
+        INT 10h   
+        
+        POP DX
+        POP CX
+        POP BX
+        POP AX
+    ENDM
+
+
 .MODEL SMALL
 .STACK 100H
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ;                  SEGMENTO DE DADOS
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 .DATA
-;======================================= CONSTANTES 
-    LINHAS_COLUNAS EQU 10
+;======================================= CONSTANTES
+
+    LINHAS_COLUNAS  EQU 10
+
+;===============================================CONTANTES DE CORES
+
+    VERDE           EQU 0010b
+    VERMELHO        EQU 0100b
+    AZUL            EQU 0001b
+    CINZA_CLARO     EQU 0111b
+    CINZA_ESCURO    EQU 1000b               
+    CIANO           EQU 0011b
+    MAGENTA         EQU 0101b
+
+
+;==========================================TAGLINES
+
+    BY       DB "DESENVOLVIDO POR: $"
+    TIAGO    DB "TIAGO ALVES RODRIGUES$"
+    RAFAEL   DB "RAFAEL MARTINIANO NOGUEIRA FILHO$"
+    ARTUR    DB "ARTUR YANO CONTARELLI$"
+
 ;======================================= VETORES PARA DESENHO DE LOGO
 ; L0 A L5 ESCREVEM A PALAVRA "BATALHA"
-    L0 DB 0C9h, 37 DUP(0CDh),0BBh, 13,10,"$"
-    L1 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 32,0DBh,32, 32,32, 0BAh ,13,10, "$"
-    L2 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh, 32,32,  0BAh  ,13,10, "$"
-    L3 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,0DBh,0DBh, 32,32, 0BAh ,13,10, "$"
-    L4 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh  ,13,10, "$"
-    L5 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,13,10, "$"
+    L0 DB 0C9h, 37 DUP(0CDh),0BBh,"$"
+    L1 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 32,0DBh,32, 32,32, 0BAh, "$"
+    L2 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh, 32,32,  0BAh,  "$"
+    L3 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,0DBh,0DBh, 32,32, 0BAh, "$"
+    L4 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,  "$"
+    L5 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,"$"
 ; L É APENAS PARA DESENHO ENTRE PALAVRAS
-    L  DB 0BAh, 37 DUP(32), 0BAh, 13,10, "$"
+    L  DB 0BAh, 37 DUP(32), 0BAh, "$"
 ; L6 A L9 ESCREVEM A PALAVRA "NAVAL"
-    L6 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  32,0DBh,0DBh,32,    32,32,  0DBh,32,32,0DBh, 32,32, 32,0DBh,0DBh,32, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh, 13,10, "$"
-    L7 DB 0BAh, 4 DUP(32), 0DBh,0DBh,32,0DBh,  32,32,  0DBh,32,32,0DBh,   32,32,  0DBh,32,32,0DBh, 32,32, 0DBh,32,32,0DBh, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh, 13,10, "$"
-    L8 DB 0BAh, 4 DUP(32), 0DBh,32,0DBh,0DBh,  32,32,  0DBh,0DBh,0DBh,0DBh,   32,32,  0DBh,32,32,0DBh,  32,32, 0DBh,0DBh,0DBh,0DBh,   32,32,   0DBh,32,32,32, 5 DUP(32), 0BAh, 13,10, "$"
-    L9 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh, 13,10, "$"
-   L10 DB 0C8h, 37 DUP(0CDh), 0BCh,  13,10, "$"
+    L6 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  32,0DBh,0DBh,32,    32,32,  0DBh,32,32,0DBh, 32,32, 32,0DBh,0DBh,32, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
+    L7 DB 0BAh, 4 DUP(32), 0DBh,0DBh,32,0DBh,  32,32,  0DBh,32,32,0DBh,   32,32,  0DBh,32,32,0DBh, 32,32, 0DBh,32,32,0DBh,  32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
+    L8 DB 0BAh, 4 DUP(32), 0DBh,32,0DBh,0DBh,  32,32,  0DBh,0DBh,0DBh,0DBh,   32,32,  0DBh,32,32,0DBh,  32,32, 0DBh,0DBh,0DBh,0DBh,   32,32,   0DBh,32,32,32, 5 DUP(32), 0BAh,"$"
+    L9 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh,"$"
+   L10 DB 0C8h, 37 DUP(0CDh), 0BCh, "$"
 
 
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
@@ -245,7 +298,7 @@ ENDM
                DW 0C8h, 14 DUP(0CDh), 0BCh     
 
 
-TABULEIRO_AUX DW 0C9h, 14 DUP(0CDh), 0BBh
+TABULEIRO_AUX  DW 0C9h, 14 DUP(0CDh), 0BBh
                DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
                DW 0BAH, 32, 30H, 32, 10 DUP(?), 32, 0BAH
                DW 0BAH, 32, 31H, 32, 10 DUP(?), 32, 0BAH
@@ -258,6 +311,7 @@ TABULEIRO_AUX DW 0C9h, 14 DUP(0CDh), 0BBh
                DW 0BAH, 32, 38H, 32, 10 DUP(?), 32, 0BAH
                DW 0BAH, 32, 39H, 32, 10 DUP(?), 32, 0BAH
                DW 0C8h, 14 DUP(0CDh), 0BCh    
+               DW ?,?,?,?,?,?
  
 ;==========================================================TABULEIROS ALEATÓRIOS
 TABULEIRO_0    DW 0C9h, 14 DUP(0CDh), 0BBh
@@ -403,41 +457,41 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
                DW 0C8h, 14 DUP(0CDh), 0BCh   
 ;======================================= OUTRAS STRINGS
 
-    PTC DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
+    PTC                 DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
 
 ;======================================= STRINGS PARA MANUAL DE INSTRUÇÃO
 
-    TITULO_MANUAL DB 'Manual de Regras:$'
-    LINHA1 DB '1. O jogo e jogado em um tabuleiro de 10x10.$'
-    LINHA2 DB '2. Se um ataque acerta uma embarcacao, a posicao e $'
-    LINHA3 DB 'marcada com o simbolo da embarcacao.  $'
-    LINHA4 DB '3. Existem diferentes tipos de embarcacoes:$'
-    LINHA5 DB '   - Fragata (f)$'
-    LINHA6 DB '   - Encoracado (e)$'
-    LINHA7 DB '   - Submarino (S/s)$'
-    LINHA8 DB '4. .$'
-    LINHA9 DB '5. Um ataque e feito especificando uma linha (0-9) $'
-    LINHA10 DB 'e uma coluna (A-J).$'
-    LINHA11 DB '7. Se um ataque erra, a posicao e marcada com "O".$'
-    LINHA12 DB '8. $'
-    LINHA13 DB '9. Quando o jogador afundar todas as embarcacoes ele vence.$'
-    LINHA14 DB '10. O jogador pode jogar novamente se quiser.$'
+    REGRAS              DB "================BEM-VINDO AO BATALHA NAVAL================== $"
+    REGRA1              DB " -> NESTE JOGO EH VOCE CONTRA A CPU $"
+    REGRA2              DB " -> EH GERADO UM TABULEIRO 10x10, COM 6 EMBARCACOES $"
+    REGRA3              DB " -> SENDO ESTAS 1 ENCOURACADO, 1 FRAGATA, 2 SUBMARINOS E 2 HIDROAVIOES$"
+    FORM_E              DB " - ENCOURCADO: 4 BLOCOS, NA HORIZONTAL OU VERTICAL $"
+    FORM_F              DB " - FRAGATA: 3 BLOCOS, NA HORIZONTAL OU VERTICAL $"
+    FORM_S              DB " - SUBMARINO: 2 BLOCOS, NA HORIZONTAL OU VERTICAL$"
+    FORM_H              DB " - HIDROAVIAO: 4 BLOCOS EM FORMATO DE T $"
+    REGRA4              DB " -> ACERTOS SAO INDICADOS COM X E ERROS COM ~ $"
+    REGRA5              DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS OU ACABAREM SEUS TIROS $"
+    REGRA6              DB " -> DIGITE A COORDENADA QUE DESEJA ATACAR, EX: 0C $"
 
     ; Terminar as regras do jogo
 
+
+
+    BAT_NAV DB "===========================BATALHA NAVAL ASSEMBLY X86===========================$"
+
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
-    MSG_ATAQUE_LINHA  DB 10, 13, "Digite o numero da linha para o ataque: $"
-    MSG_ATAQUE_COLUNA DB 10, 13, "Digite o numero da coluna para o ataque: $"
-    POS_LINHA         DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
-    POS_COLUNA        DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
-    MSG_ERRO_MAPA     DB 10, 13, "Coordenada invalidas, digite uma coordenada dentro do limite do mapa $"
+    MSG_ATAQUE_LINHA    DB  "Digite o numero da linha para o ataque: $"
+    MSG_ATAQUE_COLUNA   DB  "Digite o numero da coluna para o ataque: $"
+    POS_LINHA           DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
+    POS_COLUNA          DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
+    MSG_ERRO_MAPA       DB "Coordenada invalidas!! $"
   
 
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
 
-    MSG_FIM_JOGO     DB "Fim de jogo. Deseja jogar novamente (S/N)? $"
-    MSG_ERRO_FIM_JOGO DB "Opcao invalida. Digite S para sim ou N para nao: $"
+    MSG_FIM_JOGO        DB "Fim de jogo. Deseja jogar novamente (S/N)? $"
+    MSG_ERRO_FIM_JOGO   DB "Opcao invalida. Digite S para sim ou N para nao: $"
 
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
@@ -445,25 +499,33 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     
 ;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
 
-    CONTADOR EQU 208
-    FIM_LINHA EQU 30
-    ULTIMA_POS EQU 400
+    CONTADOR            EQU 208
+    FIM_LINHA           EQU 30
+    ULTIMA_POS          EQU 400
 
 ;==================================== CONTADORES PARA VERIICAR SE A EMBARCAÇÃO FOI ATINGIDA POR COMPLETO
-;    contFragata DB 3
-;    contEncouracado DB 4
-;    contSubmarino1 DB 2
-;    contSubmarino2 DB 2
-;    contHidroaviao1 DB 4
-;    contHidroaviao2 DB 4
+
+    contFragata         DB 3
+    contEncouracado     DB 4
+    contSubmarinoA      DB 2
+    contSubmarinoB      DB 2
+    contHidroaviaoA     DB 4
+    contHidroaviaoB     DB 4
 
 ;=======================MENSAGENS DE AFUNDADO========================
-    ENCOURACADO_AFUNDOU_MSG DB "Voce afundou um Encouracado!! $"
-    FRAGATA_AFUNDOU_MSG DB "Voce afundou uma Fragata!! $"
-    SUBMARINO_AFUNDOU_MSG DB "Voce afundou um Submarino!! $"
-    HIDROAVIAO_AFUNDOU_MSG DB "Voce afundou um Hidroaviao!! $"
+
+    MSG_COORDENADA_REPETIDA     DB 'ESTA COORDENADA JA FOI ATACADA $'
+    ENCOURACADO_AFUNDOU_MSG     DB "Voce afundou o Encouracado!! $"
+    FRAGATA_AFUNDOU_MSG         DB "Voce afundou o Fragata!! $"
+    SUBMARINO_AFUNDOU_MSG       DB "Voce afundou um Submarino!! $"
+    HIDROAVIAO_AFUNDOU_MSG      DB "Voce afundou um Hidroaviao!! $"
+    
+
 ;=======================VARIAVEL QUE DEFINE FIM DE JOGO========================
+
     VAR_FIM_DE_JOGO DB 0 ;ESSA VARIAVEL DEFINE O FIM DO JOGO, SE ELA FOR ZERO O JOGO ACABA E SE ELA FOR UM O JOGO CONTINUA.
+
+
 .CODE 
 
 MAIN PROC
@@ -488,8 +550,9 @@ MAIN PROC
     CLEAR_SCREEN
     ;RETOMA O LOOP DE PEGAR COORDENADAS 
     PROXIMO_TIRO?:
+    CALL VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
-    ; VERIFICA_FIM_JOGO -->>FAZER UMA VARREDURA DE VERIFICAR SE AINDA EXISTE EMBARCAÇÃO VIVA. OU, PARA CADA EMBARCAÇÃO ATINGIDA ADICIONAR UM COTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA
+    ;VERIFICA_FIM_JOGO -->>FAZER UMA VARREDURA DE VERIFICAR SE AINDA EXISTE EMBARCAÇÃO VIVA. OU, PARA CADA EMBARCAÇÃO ATINGIDA ADICIONAR UM COTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA
     ;SE NAO TIVER MAIS EMBARCAÇÕES, SAI DESSE LOOP DE ATAQUE
     JMP ATAQUE
 
@@ -548,31 +611,45 @@ TELA_INICIAL PROC
         CLEAR_SCREEN
 
     POS_CURSOR 5, 18
-    PRINTS L0
+    PRINT_COR L0, VERMELHO
     POS_CURSOR 6, 18
-    PRINTS L1
+    PRINT_COR L1, VERMELHO
     POS_CURSOR 7, 18
-    PRINTS L2
+    PRINT_COR L2, VERMELHO
     POS_CURSOR 8, 18
-    PRINTS L3
+    PRINT_COR L3, VERMELHO
     POS_CURSOR 9, 18
-    PRINTS L4
+    PRINT_COR L4, VERMELHO
     POS_CURSOR 10, 18
-    PRINTS L5
+    PRINT_COR L5, VERMELHO
     POS_CURSOR 11, 18
-    PRINTS L
+    PRINT_COR L, VERMELHO
     POS_CURSOR 12, 18
-    PRINTS L6
+    PRINT_COR L6, VERMELHO
     POS_CURSOR 13, 18
-    PRINTS L7
+    PRINT_COR L7, VERMELHO
     POS_CURSOR 14, 18
-    PRINTS L8
+    PRINT_COR L8, VERMELHO
     POS_CURSOR 15, 18
-    PRINTS L9
+    PRINT_COR L9, VERMELHO
     POS_CURSOR 16, 18
-    PRINTS L10
+    PRINT_COR L10, VERMELHO
 
-    POS_CURSOR 17, 18
+    POS_CURSOR 18, 25
+    PRINT_COR BY, CINZA_ESCURO
+
+    POS_CURSOR 19, 25
+    PRINT_COR TIAGO, VERDE
+
+    POS_CURSOR 20, 25
+    PRINT_COR RAFAEL, VERDE
+
+    POS_CURSOR 21, 25
+    PRINT_COR ARTUR, VERDE
+
+
+
+    POS_CURSOR 23, 18
     PRINTS PTC
     PPC
 
@@ -593,37 +670,36 @@ MANUAL_INSTRUCAO PROC
         CLEAR_SCREEN
 
         ; IMPRIMIR MANUAL DE INSTRUÇÕES
-        POS_CURSOR 5, 5
-        PRINTS TITULO_MANUAL
+        POS_CURSOR 3, 5
+        PRINT_COR REGRAS, CINZA_ESCURO
+
         POS_CURSOR 6, 5
-        PRINTS LINHA1
+        PRINT_COR REGRA1, CINZA_CLARO
         POS_CURSOR 7, 5
-        PRINTS LINHA2
+        PRINT_COR REGRA2, CINZA_CLARO
         POS_CURSOR 8, 5
-        PRINTS LINHA3
-        POS_CURSOR 9, 5
-        PRINTS LINHA4
-        POS_CURSOR 10, 5
-        PRINTS LINHA5
-        POS_CURSOR 11, 5
-        PRINTS LINHA6
-        POS_CURSOR 12, 5
-        PRINTS LINHA7
+        PRINT_COR REGRA3, CINZA_CLARO
+
+            POS_CURSOR 9, 8
+            PRINT_COR FORM_E, VERMELHO
+            POS_CURSOR 10, 8
+            PRINT_COR FORM_F, VERMELHO
+            POS_CURSOR 11, 8
+            PRINT_COR FORM_S, VERMELHO
+            POS_CURSOR 12, 8
+            PRINT_COR FORM_H, VERMELHO
+
         POS_CURSOR 13, 5
-        PRINTS LINHA8
+        PRINT_COR REGRA4, CINZA_CLARO
         POS_CURSOR 14, 5
-        PRINTS LINHA9
+        PRINT_COR REGRA5, CINZA_CLARO
         POS_CURSOR 15, 5
-        PRINTS LINHA10
-        POS_CURSOR 16, 5
-        PRINTS LINHA11
-        POS_CURSOR 17, 5
-        PRINTS LINHA12
+        PRINT_COR REGRA6, CINZA_CLARO
+
         POS_CURSOR 18, 5
-        PRINTS LINHA13
-        POS_CURSOR 19, 5
-        PRINTS LINHA14
-        POS_CURSOR 20, 5
+        PRINT_COR REGRAS, CINZA_ESCURO
+
+        POS_CURSOR 19,8
         PRINTS PTC
         PPC
 
@@ -650,10 +726,7 @@ PRINT_MATRIZ PROC
     MOV CX, CONTADOR ; CX RECEBE TAMANHO DA MATRIZ
 
     MOSTRAR_MATRIZ:
-    MOV DX, TABULEIRO[BX][SI] ;DX RECEBE A POSIÇÃO DA MATRIZ
-
-    MOV AH, 2
-    INT 21H
+    PRINTC TABULEIRO[BX][SI]
 
     ADD SI, 2
 
@@ -718,7 +791,11 @@ ALEATORIO ENDP
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR=================}
 PEGAR_COORDENADAS PROC
     ;ATACAR LINHA 
-    PRINTS MSG_ATAQUE_LINHA             ; mensagem de pegar coordenadas na tela
+    POS_CURSOR 0, 0
+    PRINT_COR BAT_NAV, AZUL
+
+    POS_CURSOR 15, 20
+    PRINT_COR MSG_ATAQUE_LINHA, MAGENTA             ; mensagem de pegar coordenadas na tela
     
     MOV AH, 01H                         ; pega o caractere
     INT 21H
@@ -742,7 +819,8 @@ PEGAR_COORDENADAS PROC
     XOR BX, BX
 
 ;                                       ;ATACAR COLUNA
-    PRINTS MSG_ATAQUE_COLUNA            ; mensagem de pegar coordenadas na tela
+    POS_CURSOR 16, 20
+    PRINT_COR MSG_ATAQUE_COLUNA, CIANO            ; mensagem de pegar coordenadas na tela
     
     MOV AH, 01H                         ; pega o caractere
     INT 21h
@@ -777,9 +855,8 @@ CONTINUAR:
     RET
     FORA_DO_MAPA:
 ;                                       ; Mensagem de erro e solicitação de novas coordenadasdas
-    LEA DX, MSG_ERRO_MAPA
-    MOV AH, 9
-    INT 21H
+    POS_CURSOR 18,20
+    PRINT_COR MSG_ERRO_MAPA, VERMELHO
     JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
     
 PEGAR_COORDENADAS ENDP
@@ -941,77 +1018,98 @@ UPDATE_ATAQUE PROC;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO PROC
     ADD AX, POS_COLUNA     ;(deslocamento final)
     
     ; Carregar o valor da posição na matriz
-    LEA SI, TABULEIRO      ; SI aponta para o início da matriz normal
-    LEA DI, TABULEIRO_AUX  ; DI aponta para o início da matriz auxiliar
+    LEA SI, TABULEIRO      ; SI aponta para o início da MATRIZ NORMAL
+    LEA DI, TABULEIRO_AUX  ; DI aponta para o início da MATRIZ AUXILIAR
     ADD SI, AX               ; SI aponta para a posição na matriz normal
     ADD DI, AX              ; DI aponta para o elemento da matriz[linha][coluna] do tabuleiro inimigo
-    MOV BX, [DI]
+    MOV BX, [DI]            ;COMPARA COM O TABULEIRO AUX, DO INIMIGO
 ;
-    ;COMPARA COM CADA UMA EMBARCAÇÃO
+    ;verificar se o tiro acertou a embarcação ou não
+    ;COMPARA COM CADA UMA EMBARCAÇÃO NA MATRIZ AUX
     CMP BX, "f"
     JE ACERTO_FRAGATA
     CMP BX, "e"
     JE ACERTO_ENCORACADO
     CMP BX, "S"
-    JE ACERTO_SUBMARINO1
+    JE ACERTO_SUBMARINOA
     CMP BX, "s"
-    JE ACERTO_SUBMARINO2
+    JE ACERTO_SUBMARINOB
     CMP BX, "a"
-    JE ACERTO_HIDROAVIAO1
+    JE ACERTO_HIDROAVIAOA
     CMP BX, "h"
-    JE ACERTO_HIDROAVIAO2
+    JE ACERTO_HIDROAVIAOB
+    CMP BX, 16h
+    JE REPETIDO
                           ;Verifica se a célula contém uma embarcação
 
 ERROU:
-    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: 'O')
-    MOV WORD PTR [SI], "O"           ; Marcar erro com 'O' no tabuleiro normal
+    ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: '~')
+    MOV WORD PTR [SI], 0F7h          ; Marcar erro com '~' no tabuleiro normal
+    MOV WORD PTR [DI], 0F7h         ; Marcar erro com '~' no tabuleiro auxiliar para depois comparar com os novos ataques em CALL VERIFICA AFUNDOU 
     JMP FIM_VERIFICACAO
-    ;verificar se o tiro acertou a embarcação ou não
-    ;se acertou, marcar com cor diferente/X a embarcação
+    
+    ;dec os cotadores: contFragata DB 3, contEncouracado DB 4, contSubmarino1 DB 2, contSubmarino2 DB 2, contHidroaviao1 DB 4, contHidroaviao2 DB 4
 
     ACERTO_FRAGATA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 'f'           
+    MOV WORD PTR [SI], 16h ;TABULEIRO
+    MOV WORD PTR [DI], 16h ;TABULEIRO AUX
+    DEC contFragata
     JMP FIM_VERIFICACAO
 
     ACERTO_ENCORACADO:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 'e'           
+    MOV WORD PTR [SI], 16h   
+    MOV WORD PTR [DI], 16h 
+    DEC contEncouracado        
     JMP FIM_VERIFICACAO
 
-    ACERTO_SUBMARINO1:
+    ACERTO_SUBMARINOA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 'S'           
+    MOV WORD PTR [SI], 16h
+    MOV WORD PTR [DI], 16h
+    DEC contSubmarinoA
     JMP FIM_VERIFICACAO
 
-    ACERTO_SUBMARINO2:
+    ACERTO_SUBMARINOB:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 's'           
+    MOV WORD PTR [SI], 16h   
+    MOV WORD PTR [DI], 16h
+    DEC contSubmarinoB
     JMP FIM_VERIFICACAO
 
-    ACERTO_HIDROAVIAO1:
+    ACERTO_HIDROAVIAOA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 'a'           
+    MOV WORD PTR [SI], 16h  
+    MOV WORD PTR [DI], 16h
+    DEC contHidroaviaoA
     JMP FIM_VERIFICACAO
 
-    ACERTO_HIDROAVIAO2:
+    ACERTO_HIDROAVIAOB:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 'h'           
+    MOV WORD PTR [SI], 16h   
+    MOV WORD PTR [DI], 16h       
+    DEC contHidroaviaoB   
     JMP FIM_VERIFICACAO
 
+    ;verificar se a cordenada ja foi atacada e mostrar mensagem disso
+    REPETIDO:
+    POS_CURSOR 25,20
+    PRINT_COR MSG_COORDENADA_REPETIDA, VERMELHO
+    PPC 
+    PRINTS PTC
+    ENDL
 
     FIM_VERIFICACAO:
 
     ;REVER ESSA PARTE
-    ;CALL VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
-
     POP_ALL
     RET
 
     ;adicionar uma verificação intermediária para garantir que a posição em 
     ;TABULEIRO_AUX ainda não foi acertada antes, caso queira evitar múltiplos acertos na mesma posição.
 
-UPDATE_ATAQUE ENDP;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO ENDP
+UPDATE_ATAQUE ENDP;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO ENDPATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO ENDP
 ;=======================PROCEDIMENTO DE VERIFICAR AFUNDADOS====================={
 ;
 ;   O QUE FAZ: VERIFICA SE EMBARCAÇÃO AFUNDOU, CASO POSITIVO, MOSTRA MENSAGEM
@@ -1029,45 +1127,82 @@ UPDATE_ATAQUE ENDP;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO ENDP
 ;=======================PROCEDIMENTO DE VERIFICAR AFUNDADOS=====================}
 VERIFICA_AFUNDOU PROC
 
-SWITCH_AFUNDOU:
+    SWITCH_AFUNDOU:
+    ;compara os cotadores:
+    ;contFragata DB 3, contEncouracado DB 4, contSubmarino1 DB 2, contSubmarino2 DB 2, contHidroaviao1 DB 4, contHidroaviao2 DB 4
 
-    AFUNDOU CONTADOR, 'e', TABULEIRO_AUX
-    JNZ ENCOURACADO_AFUNDOU
+    CMP contEncouracado, 0
+    JE ENCOURACADO_AFUNDOU
 
-    AFUNDOU CONTADOR, 'f', TABULEIRO_AUX
-    JNZ FRAGATA_AFUNDOU
+    CMP contFragata, 0
+    JE FRAGATA_AFUNDOU
 
-    AFUNDOU CONTADOR, 's', TABULEIRO_AUX
-    JNZ SUBMARINO_AFUNDOU
+    CMP contSubmarinoA, 0
+    JE SUBMARINOA_AFUNDOU
 
-    AFUNDOU CONTADOR, 'S', TABULEIRO_AUX
-    JNZ SUBMARINO_AFUNDOU
 
-    AFUNDOU CONTADOR, 'h', TABULEIRO_AUX
-    JNZ HIDROAVIAO_AFUNDOU
-
-    AFUNDOU CONTADOR, 'a', TABULEIRO_AUX
-    JNZ HIDROAVIAO_AFUNDOU
+    JMP GAMBIARRA
+    VOLTA:
 
     JMP FIM_AFUNDOU
 
 ENCOURACADO_AFUNDOU:
-
-    PRINTS ENCOURACADO_AFUNDOU_MSG
-    JMP FIM_AFUNDOU
-
+    POS_CURSOR 20,25
+    INC contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
+    PRINT_COR ENCOURACADO_AFUNDOU_MSG, VERMELHO
+    PPC
+    ENDL
+    JMP PRESSIONE_PARA_CONTINUAR
 
 FRAGATA_AFUNDOU:
-    PRINTS FRAGATA_AFUNDOU_MSG
-    JMP FIM_AFUNDOU
+    POS_CURSOR 20,25
+    INC contFragata
+    PRINT_COR FRAGATA_AFUNDOU_MSG, VERMELHO
+    
+    JMP PRESSIONE_PARA_CONTINUAR
 
-SUBMARINO_AFUNDOU:
+SUBMARINOA_AFUNDOU:
+    POS_CURSOR 20,25
+    INC contSubmarinoA
+    PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO
+    
+    JMP PRESSIONE_PARA_CONTINUAR
 
-    PRINTS SUBMARINO_AFUNDOU_MSG
-    JMP FIM_AFUNDOU
+SUBMARINOB_AFUNDOU:
+    POS_CURSOR 20,25
+    INC contSubmarinoB
+    PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO 
+    JMP PRESSIONE_PARA_CONTINUAR
 
-HIDROAVIAO_AFUNDOU:
-    PRINTS HIDROAVIAO_AFUNDOU_MSG
+HIDROAVIAOA_AFUNDOU:
+    POS_CURSOR 20,25
+    INC contHidroaviaoA
+    PRINT_COR HIDROAVIAO_AFUNDOU_MSG, VERMELHO
+    
+    JMP PRESSIONE_PARA_CONTINUAR
+
+HIDROAVIAOB_AFUNDOU:
+    POS_CURSOR 20,25
+    INC contHidroaviaoB
+    PRINT_COR HIDROAVIAO_AFUNDOU_MSG,VERMELHO
+    JMP PRESSIONE_PARA_CONTINUAR
+    
+GAMBIARRA:
+    CMP contSubmarinoB, 0
+    JE SUBMARINOB_AFUNDOU
+
+    CMP contHidroaviaoA, 0
+    JE HIDROAVIAOA_AFUNDOU
+
+    CMP contHidroaviaoB, 0
+    JE HIDROAVIAOB_AFUNDOU
+
+    JMP VOLTA
+    
+PRESSIONE_PARA_CONTINUAR:
+    ENDL
+    PPC
+    ENDL
 
 FIM_AFUNDOU:
     RET
@@ -1128,6 +1263,44 @@ CONTINUAR1:
     POP_ALL
     RET
 VERIFICA_FIM_JOGO ENDP
+
+;====================PROCEDIMENTO PARA MUDAR COR DE STRINGS====================={
+;
+;   COMO FUNCIONA: SALVA O ENDERECO DA STRING EM SI E DA COR EM BL
+;
+;   ONDE USAR: QUANDO QUISER COLORIR UM TEXTO
+;
+;   PROCEDIMENTOS CHAMADOS: NENHUM
+;   
+;   MACROS USADOS: TAB
+;
+;====================PROCEDIMENTO PARA MUDAR COR DE STRINGS=====================}
+MUDA_COR PROC                  ;Funcao imprime_color
+    PUSH AX                         ;Feita para padronizar a impressao de cor ao longo do programa e
+    PUSH CX                         ;quando for feita a chamada dela apenas precisa passar o parametro
+    PUSH SI                         ;de cor para BL.
+    
+    XOR BH, BH                      ;Zera bit superior de bx
+    MOV CX,1 
+    
+    REPETE:               
+        MOV AH, 9                  ;chama a funcao de colocar o caracter na tela                     
+        MOV AL,[SI]                ;incrementa para poder ir para o proximo caracter e imprimir a string totalmente 
+        INT 10H 
+       
+        INC SI 
+        TAB 1
+        
+        MOV AL,[SI]
+        CMP AL,'$'
+        JNE REPETE                  ;Fim de string marcada com $, logo enuanto for diferente, percorre a string
+    
+    POP SI
+    POP CX
+    POP AX    
+    RET  
+MUDA_COR ENDP
+
 
 
 END MAIN
