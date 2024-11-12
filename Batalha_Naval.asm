@@ -490,8 +490,26 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
 
-    MSG_FIM_JOGO        DB "Fim de jogo. Deseja jogar novamente (S/N)? $"
-    MSG_ERRO_FIM_JOGO   DB "Opcao invalida. Digite S para sim ou N para nao: $"
+    ; R é de row
+    R0 DB 0C9h, 60 DUP(0CDh),0BBh, "$" 
+    R  DB 0BAh, 60 DUP(32), 0BAh, "$" ;R É APENAS PARA espaço ENTRE PALAVRAS
+    R10 DB 0C8h, 60 DUP(0CDh), 0BCh,"$"
+    TRACINHO DB 0BAh, "$"
+
+    MSG_FIM_JOGO     DB  "Fim de jogo. Deseja jogar novamente (S/N)? $"; 43 CARACTERES
+    MSG_ERRO_FIM_JOGO DB  "Opcao invalida. Digite S para sim ou N para nao: $"; 49 CARACTERES
+        ; Definição dos caracteres para os navios
+    MASTRO     DB 0B3h, "$"   ; Mastro vertical 
+    VELA1      DB 0DFh, "$"    ; Parte da vela 
+    VELA2      DB 0DCh, "$"   ; Parte da vela 
+    VELA3      DB 0DBh, "$"   ; Vela cheia 
+    CORDA      DB 0C4h, "$"    ; Corda horizontal 
+    CASCO1     DB 0DBh, "$"    ; Bloco cheio para casco 
+    CASCO2     DB 0B2h, "$"   ; Bloco parcial 
+    CASCO3     DB 0B1h, "$"   ; Bloco leve 
+    AGUA       DB 80 DUP(0F7H) ; Ondas
+
+
 
 ;====================================== STRING PARA PROCEDIMENTO "ALEATORIO"
 
@@ -1222,15 +1240,181 @@ VERIFICA_AFUNDOU ENDP
 VERIFICA_FIM_JOGO PROC
 PUSH_ALL
 
-    ;MOSTRA MENSAGEM DE JOGO ACABADO
     CLEAR_SCREEN
-    POS_CURSOR 12, 18
-    PRINTS MSG_FIM_JOGO
+    ; Desenho do primeiro navio (esquerdo)
+    ; Mastro principal com cordas
+    POS_CURSOR 19, 25
+    PRINTS MASTRO
+    POS_CURSOR 20, 25
+    PRINTS MASTRO
+    POS_CURSOR 21, 25
+    PRINTS MASTRO
+    
+    ; Cordas do mastro
+    POS_CURSOR 19, 24
+    PRINTS CORDA
+    POS_CURSOR 19, 26
+    PRINTS CORDA
+    
+
+    ; Segunda vela
+    POS_CURSOR 20, 23
+    PRINTS VELA3
+    POS_CURSOR 21, 23
+    PRINTS VELA2
+
+    ; Casco do primeiro navio
+    POS_CURSOR 22, 20
+    PRINTS CASCO3
+    POS_CURSOR 22, 21
+    PRINTS CASCO2
+    POS_CURSOR 22, 22
+    PRINTS CASCO1
+    POS_CURSOR 22, 23
+    PRINTS CASCO1
+    POS_CURSOR 22, 24
+    PRINTS CASCO1
+    POS_CURSOR 22, 25
+    PRINTS CASCO1
+    POS_CURSOR 22, 26
+    PRINTS CASCO1
+    POS_CURSOR 22, 27
+    PRINTS CASCO1
+    POS_CURSOR 22, 28
+    PRINTS CASCO2
+    POS_CURSOR 22, 29
+    PRINTS CASCO3
+
+    ; Base do casco primeiro navio
+    POS_CURSOR 23, 21
+    PRINTS CASCO1
+    POS_CURSOR 23, 22
+    PRINTS CASCO1
+    POS_CURSOR 23, 23
+    PRINTS CASCO1
+    POS_CURSOR 23, 24
+    PRINTS CASCO1
+    POS_CURSOR 23, 25
+    PRINTS CASCO1
+    POS_CURSOR 23, 26
+    PRINTS CASCO1
+    POS_CURSOR 23, 27
+    PRINTS CASCO1
+    POS_CURSOR 23, 28
+    PRINTS CASCO1
+
+; Desenho do segundo navio (direito)
+    ; Mastro principal com cordas
+    POS_CURSOR 19, 45
+    PRINTS MASTRO
+    POS_CURSOR 20, 45
+    PRINTS MASTRO
+    POS_CURSOR 21, 45
+    PRINTS MASTRO
+    
+    ; Cordas do mastro
+    POS_CURSOR 19, 44
+    PRINTS CORDA
+    POS_CURSOR 19, 46
+    PRINTS CORDA
+    
+    ; Vela principal
+    POS_CURSOR 19, 46
+    PRINTS VELA1
+    POS_CURSOR 20, 46
+    PRINTS VELA3
+    POS_CURSOR 21, 46
+    PRINTS VELA2
+
+    ; Segunda vela
+    POS_CURSOR 20, 43
+    PRINTS VELA3
+    POS_CURSOR 21, 43
+    PRINTS VELA2
+
+    ; Casco do segundo navio
+    POS_CURSOR 22, 40
+    PRINTS CASCO3
+    POS_CURSOR 22, 41
+    PRINTS CASCO2
+    POS_CURSOR 22, 42
+    PRINTS CASCO1
+    POS_CURSOR 22, 43
+    PRINTS CASCO1
+    POS_CURSOR 22, 44
+    PRINTS CASCO1
+    POS_CURSOR 22, 45
+    PRINTS CASCO1
+    POS_CURSOR 22, 46
+    PRINTS CASCO1
+    POS_CURSOR 22, 47
+    PRINTS CASCO1
+    POS_CURSOR 22, 48
+    PRINTS CASCO2
+    POS_CURSOR 22, 49
+    PRINTS CASCO3
+
+    ; Base do casco segundo navio
+    POS_CURSOR 23, 41
+    PRINTS CASCO1
+    POS_CURSOR 23, 42
+    PRINTS CASCO1
+    POS_CURSOR 23, 43
+    PRINTS CASCO1
+    POS_CURSOR 23, 44
+    PRINTS CASCO1
+    POS_CURSOR 23, 45
+    PRINTS CASCO1
+    POS_CURSOR 23, 46
+    PRINTS CASCO1
+    POS_CURSOR 23, 47
+    PRINTS CASCO2
+    POS_CURSOR 23, 48
+    PRINTS CASCO3
+
+        ; Agua
+    POS_CURSOR 24, 0
+    PRINT_COR AGUA, AZUL
+  
+
+    ;MOSTRA MENSAGEM DE JOGO ACABADO
+    POS_CURSOR 5, 10
+    PRINT_COR R0, AZUL
+    POS_CURSOR 6, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 7, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 8, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 9, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 11, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 12, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 13, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 14, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 15, 10
+    PRINT_COR R, AZUL
+    POS_CURSOR 16, 10
+    PRINT_COR R10, AZUL
+
+    POS_CURSOR 10, 71
+    PRINT_COR TRACINHO, AZUL ;PRINTA O FINAL DA BOX EM QUE A MENSAGEM ESTA INSERIDA
+    POS_CURSOR 10, 10
+    PRINT_COR TRACINHO, AZUL
+    POS_CURSOR 10, 19
+    PRINT_COR MSG_FIM_JOGO, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO
+
+
 JMP VERIFICA_RESPOSTA_FIM_JOGO
 
 ERRO_FIM_JOGO:
-POS_CURSOR 13, 15
-PRINTS MSG_ERRO_FIM_JOGO
+ 
+    POS_CURSOR 11, 16
+    PRINT_COR MSG_ERRO_FIM_JOGO, CIANO ;PRINTA A MENSAGEM DE ERRO DE FIM DE JOGO
 
 VERIFICA_RESPOSTA_FIM_JOGO:
     MOV AH, 01
