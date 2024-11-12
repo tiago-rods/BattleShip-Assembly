@@ -202,7 +202,18 @@ AFUNDOU MACRO COUNTER, COMPARADO, STRING
     REPNE SCASW
 
 ENDM
-
+;------------MACRO PARA MUDAR COR DE STRING-------------{
+;   
+;   FUNÇÃO DO MACRO: MUDAR COR DE STRINGS TERMINADAS EM $
+;
+;   COMO USAR: CHAMAR MACRO, PASSAR A STRING QUE QUER MUDAR A 
+;   COR E A COR PARA QUAL QUER MUDAR, EM BL É ARMAZENADA A COR
+;   E EM [SI] A STRING
+;
+;   NOME --> PRINT_COR
+;
+;------------MACRO PARA MUDAR COR DE STRING-------------}
+PRINT_COR MACRO STRING, COR
 PRINT_COR MACRO STRING, COR
 PUSH SI
 PUSH BX 
@@ -215,25 +226,37 @@ POP BX
 POP SI
 ENDM
 
-   TAB MACRO N                 ;Macro feita para dar TAB (dar espaco da lateral) na tela de saida.
-        PUSH AX
-        PUSH BX
-        PUSH CX 
-        PUSH DX
+;----------------MACRO PARA TABULAÇÃ0------------------{
+;
+;   FUNÇÃO DO MACRO: TABULAÇÃO, CRIAR ESPAÇOS EM BRANCO
+;
+;   COMO USAR: CHAMAR MACRO MAIS NUMERO DE VEZES QUE QUER QUE
+;   A TABULAÇÃO SEJA APLICADA
+;   
+;   NOME --> TAB
+;
+;----------------MACRO PARA TABULAÇÃ0------------------}
+
+TAB MACRO N                 
+    PUSH AX
+    PUSH BX
+    PUSH CX 
+    PUSH DX
         
-        MOV AH, 3
-        MOV BH, 0
-        INT 10h
+    MOV AH, 3
+    MOV BH, 0
+    INT 10h
         
-        MOV AH, 2
-        ADD DL, N 
-        INT 10h   
+    MOV AH, 2
+    ADD DL, N 
+    INT 10h   
         
-        POP DX
-        POP CX
-        POP BX
-        POP AX
-    ENDM
+    POP DX
+    POP CX
+    POP BX
+    POP AX
+ENDM
+
 
 
 .MODEL SMALL
@@ -255,6 +278,7 @@ ENDM
     CINZA_ESCURO    EQU 1000b               
     CIANO           EQU 0011b
     MAGENTA         EQU 0101b
+    LARANJA         EQU 110110b
 
 
 ;==========================================TAGLINES
@@ -1058,6 +1082,8 @@ UPDATE_ATAQUE PROC;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO PROC
     JE ACERTO_HIDROAVIAOB
     CMP BX, 16h
     JE REPETIDO
+    CMP BX, 0F7H
+    JE REPETIDO
                           ;Verifica se a célula contém uma embarcação
 
 ERROU:
@@ -1112,11 +1138,13 @@ ERROU:
 
     ;verificar se a cordenada ja foi atacada e mostrar mensagem disso
     REPETIDO:
-    POS_CURSOR 25,20
+    POS_CURSOR 5,25
     PRINT_COR MSG_COORDENADA_REPETIDA, VERMELHO
+    POS_CURSOR 6, 22
+    PRINT_COR PTC, CINZA_ESCURO
     PPC 
-    PRINTS PTC
     ENDL
+    
 
     FIM_VERIFICACAO:
 
