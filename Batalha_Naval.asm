@@ -213,8 +213,8 @@ ENDM
 ;   NOME --> PRINT_COR
 ;
 ;------------MACRO PARA MUDAR COR DE STRING-------------}
-PRINT_COR MACRO STRING, COR
 
+PRINT_COR MACRO STRING, COR
 PUSH SI
 PUSH BX 
 
@@ -493,15 +493,16 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     FORM_F              DB " - FRAGATA: 3 BLOCOS, NA HORIZONTAL OU VERTICAL $"
     FORM_S              DB " - SUBMARINO: 2 BLOCOS, NA HORIZONTAL OU VERTICAL$"
     FORM_H              DB " - HIDROAVIAO: 4 BLOCOS EM FORMATO DE T $"
-    REGRA4              DB " -> ACERTOS SAO INDICADOS COM X E ERROS COM ~ $"
+    REGRA4              DB " -> ACERTOS SAO INDICADOS COM ",16h," E ERROS COM ",0F7h," $"
     REGRA5              DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS OU ACABAREM SEUS TIROS $"
     REGRA6              DB " -> DIGITE A COORDENADA QUE DESEJA ATACAR, EX: 0C $"
+
 
     ; Terminar as regras do jogo
 
 
 
-    BAT_NAV DB "===========================BATALHA NAVAL ASSEMBLY X86===========================$"
+    BAT_NAV             DB "===========================BATALHA NAVAL ASSEMBLY X86===========================$"
 
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
@@ -515,23 +516,23 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
 
     ; R é de row
-    R0 DB 0C9h, 60 DUP(0CDh),0BBh, "$" 
-    R  DB 0BAh, 60 DUP(32), 0BAh, "$" ;R É APENAS PARA espaço ENTRE PALAVRAS
-    R10 DB 0C8h, 60 DUP(0CDh), 0BCh,"$"
-    TRACINHO DB 0BAh, "$"
+    R0                 DB 0C9h, 60 DUP(0CDh),0BBh, "$" 
+    R                  DB 0BAh, 60 DUP(32), 0BAh, "$" ;R É APENAS PARA espaço ENTRE PALAVRAS
+    R10                DB 0C8h, 60 DUP(0CDh), 0BCh,"$"
+    TRACINHO           DB 0BAh, "$"
 
-    MSG_FIM_JOGO     DB  "Fim de jogo. Deseja jogar novamente (S/N)? $"; 43 CARACTERES
-    MSG_ERRO_FIM_JOGO DB  "Opcao invalida. Digite S para sim ou N para nao: $"; 49 CARACTERES
+    MSG_FIM_JOGO       DB  "Fim de jogo. Deseja jogar novamente (S/N)? $"; 43 CARACTERES
+    MSG_ERRO_FIM_JOGO  DB  "Opcao invalida. Digite S para sim ou N para nao: $"; 49 CARACTERES
         ; Definição dos caracteres para os navios
-    MASTRO     DB 0B3h, "$"   ; Mastro vertical 
-    VELA1      DB 0DFh, "$"    ; Parte da vela 
-    VELA2      DB 0DCh, "$"   ; Parte da vela 
-    VELA3      DB 0DBh, "$"   ; Vela cheia 
-    CORDA      DB 0C4h, "$"    ; Corda horizontal 
-    CASCO1     DB 0DBh, "$"    ; Bloco cheio para casco 
-    CASCO2     DB 0B2h, "$"   ; Bloco parcial 
-    CASCO3     DB 0B1h, "$"   ; Bloco leve 
-    AGUA       DB 80 DUP(0F7H) ; Ondas
+    MASTRO             DB 0B3h, "$"   ; Mastro vertical 
+    VELA1              DB 0DFh, "$"    ; Parte da vela 
+    VELA2              DB 0DCh, "$"   ; Parte da vela 
+    VELA3              DB 0DBh, "$"   ; Vela cheia 
+    CORDA              DB 0C4h, "$"    ; Corda horizontal 
+    CASCO1             DB 0DBh, "$"    ; Bloco cheio para casco 
+    CASCO2             DB 0B2h, "$"   ; Bloco parcial 
+    CASCO3             DB 0B1h, "$"   ; Bloco leve 
+    AGUA               DB 80 DUP(0F7H) ; Ondas
 
 
 
@@ -1196,42 +1197,40 @@ ENCOURACADO_AFUNDOU:
     POS_CURSOR 20,25
     INC contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
     PRINT_COR ENCOURACADO_AFUNDOU_MSG, VERMELHO
-    PPC
-    ENDL
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
 
 FRAGATA_AFUNDOU:
     POS_CURSOR 20,25
     INC contFragata
     PRINT_COR FRAGATA_AFUNDOU_MSG, VERMELHO
     
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
 
 SUBMARINOA_AFUNDOU:
     POS_CURSOR 20,25
     INC contSubmarinoA
     PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO
     
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
 
 SUBMARINOB_AFUNDOU:
     POS_CURSOR 20,25
     INC contSubmarinoB
     PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO 
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
 
 HIDROAVIAOA_AFUNDOU:
     POS_CURSOR 20,25
     INC contHidroaviaoA
     PRINT_COR HIDROAVIAO_AFUNDOU_MSG, VERMELHO
     
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
 
 HIDROAVIAOB_AFUNDOU:
     POS_CURSOR 20,25
     INC contHidroaviaoB
     PRINT_COR HIDROAVIAO_AFUNDOU_MSG,VERMELHO
-    JMP PRESSIONE_PARA_CONTINUAR
+    JMP FIM_AFUNDOU
     
 GAMBIARRA:
     CMP contSubmarinoB, 0
@@ -1244,13 +1243,9 @@ GAMBIARRA:
     JE HIDROAVIAOB_AFUNDOU
 
     JMP VOLTA
-    
-PRESSIONE_PARA_CONTINUAR:
-    ENDL
-    PPC
-    ENDL
 
 FIM_AFUNDOU:
+    ENDL
     RET
 
 VERIFICA_AFUNDOU ENDP
