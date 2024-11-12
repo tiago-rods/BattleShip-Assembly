@@ -74,9 +74,9 @@ ENDM
 ;-------------MACRO PARA LIMPAR TELA---------}
 CLEAR_SCREEN MACRO
     PUSH_ALL    
-    MOV AX, 0600H
-    MOV BH, 07H
-    MOV CX, 0000H
+    MOV AX, 600H
+    MOV BH, 7H
+    MOV CX, 0H
     MOV DX, 184FH
     INT 10H
     POP_ALL
