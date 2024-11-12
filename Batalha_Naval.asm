@@ -307,6 +307,20 @@ ENDM
 
 
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
+  TABULEIRO_INICIAL DW 0C9h, 14 DUP(0CDh), 0BBh
+                    DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                    DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
+                    DW 0C8h, 14 DUP(0CDh), 0BCh     
+
   TABULEIRO    DW 0C9h, 14 DUP(0CDh), 0BBh
                DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
                DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
@@ -494,8 +508,9 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     FORM_S              DB " - SUBMARINO: 2 BLOCOS, NA HORIZONTAL OU VERTICAL$"
     FORM_H              DB " - HIDROAVIAO: 4 BLOCOS EM FORMATO DE T $"
     REGRA4              DB " -> ACERTOS SAO INDICADOS COM ",16h," E ERROS COM ",0F7h," $"
-    REGRA5              DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS OU ACABAREM SEUS TIROS $"
+    REGRA5              DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS ACABAREM SEUS TIROS $"
     REGRA6              DB " -> DIGITE A COORDENADA QUE DESEJA ATACAR, EX: 0C $"
+    REGRA7              DB " -> APERTAR ESC SAI DO JOGO $"
 
 
     ; Terminar as regras do jogo
@@ -555,6 +570,7 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     contSubmarinoB      DB 2
     contHidroaviaoA     DB 4
     contHidroaviaoB     DB 4
+    countGeral          DB 0
 
 ;=======================MENSAGENS DE AFUNDADO========================
 
@@ -570,8 +586,8 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
     VAR_FIM_DE_JOGO DB 0 ;ESSA VARIAVEL DEFINE O FIM DO JOGO, SE ELA FOR ZERO O JOGO ACABA E SE ELA FOR UM O JOGO CONTINUA.
 
 ;=======================VARIAVEL QUE DEFINE A QUANTIDADE DE TIROS========================
-    TIROS DB ?; QUANTIDADE DE TIROS QUE O JOGADOR TEM
-    QTD_SALVA_TIROS DB 5; QUANTIDADE DE TIROS QUE O JOGADOR TEM POR PARTIDA
+    TIROS DB 0; QUANTIDADE DE TIROS QUE O JOGADOR TEM
+    QTD_SALVA_TIROS DB 50; QUANTIDADE DE TIROS QUE O JOGADOR TEM POR PARTIDA
     TIROS_RESTANTES DB 'TIROS RESTANTES: $'
 
 .CODE 
@@ -580,10 +596,32 @@ MAIN PROC
     MOV AX, @DATA
     MOV DS, AX
     MOV ES, AX
+    JMP JOGAR_PRIMEIRA_VEZ
 
-    JOGAR:
-    MOV AL, QTD_SALVA_TIROS ; Carrega o valor de QTD_SALVA_TIROS em AL, OU SEJA, OS TIROS SAO RESETADOS
-    ;AINDA FALTA RESETAR O TABULEIRO E AS CONTAGENS DE EMBARCAÇÕES
+    JOGAR:; RESETA OS VALORES
+
+    ;RESETAR COUNTS
+   MOV contFragata         , 3
+   MOV contEncouracado     , 4
+   MOV contSubmarinoA      , 2
+   MOV contSubmarinoB      , 2
+   MOV contHidroaviaoA     , 4
+   MOV contHidroaviaoB     , 4
+   MOV countGeral          , 0
+
+    ;RESETAR O TABULEIRO
+
+    RESET_TABULEIRO:
+    XOR AX, AX
+    MOV CX, CONTADOR   ; Define o número de elementos a copiar
+    MOV SI, OFFSET TABULEIRO_INICIAL ; Aponta para o tabuleiro inicial
+    MOV DI, OFFSET TABULEIRO         ; Aponta para o tabuleiro em uso
+    CLD ;DEFINE A DIREÇÃO
+    REP MOVSW ;REPETE ATE TROCAR TODOS OS CARATERES
+
+
+    JOGAR_PRIMEIRA_VEZ:
+    MOV AL, QTD_SALVA_TIROS ; Carrega o valor de QTD_SALVA_TIROS em AL
     MOV TIROS, AL           ; Move o valor de AL para TIROS
     CALL        TELA_INICIAL
     CALL        MANUAL_INSTRUCAO
@@ -592,6 +630,9 @@ MAIN PROC
     ENDL ;PULA UMA LINHA
     CALL        GERA_TABULEIRO ;gera o tabuleiro aleatório das embarcações
     ;MOSTRA A MATRIZ INICIAL NA TELA PARA O USUÁRIO
+    JMP ATAQUE
+    JUMP_JOGAR:
+    JMP JOGAR
 
     ATAQUE:
     CALL PRINT_MATRIZ ;IMPRIME A MATRIZ NA TELA
@@ -600,40 +641,24 @@ MAIN PROC
     ENDL
     CALL        UPDATE_ATAQUE ;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO
     CLEAR_SCREEN
-    ;RETOMA O LOOP DE PEGAR COORDENADAS 
-    PROXIMO_TIRO?:
     CALL        VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
     ;VERIFICA_FIM_JOGO -->>FAZER UMA VARREDURA DE VERIFICAR SE AINDA EXISTE EMBARCAÇÃO VIVA. OU, PARA CADA EMBARCAÇÃO ATINGIDA ADICIONAR UM COTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA
     ;SE NAO TIVER MAIS EMBARCAÇÕES, SAI DESSE LOOP DE ATAQUE
+    CMP countGeral, 6;Verifica se todas as embarcações ja foram afundadas
+    JE SAI_LOOP_ATAQUE     ;SAINDO DO LOOP DE ATAQUE, MOTRA MENSAGEM DE JOGO ACABADO
     CMP TIROS, 0
     JNZ ATAQUE
-
-    ;SAINDO DO LOOP DE ATAQUE, MOTRA MENSAGEM DE JOGO ACABADO
-    ;XOR BX,BX
-    ;XOR AX,AX
-    ;XOR DX,DX
-    ;XOR SI,SI
-    ;XOR DI,DI
-    ;FINALIZAR_JOGO:
-    ;MOSTRA MENSAGEM msgFinalizacao "Deseja jogar novamente (S ou N)? $"
-    ;MOV AH, 01
-    ;INT 21H
-    ;CMP AL, "S"
-    ;JE JOGAR
-    ;CMP AL, "N"
-    ;JE FIM_JOGO
-    ;JMP FINALIZAR_JOGO
 
 ;TODO:
     ;CONTABILIZAR ACERTO E ERRO DE EMBARCAÇÕES
     ;Continue o jogo ou finalize se todas as embarcações forem destruídas
     ;se acertou todas, finalizar o jogo
     ;jogar denovo?
-
+SAI_LOOP_ATAQUE:
     CALL    VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
     CMP     VAR_FIM_DE_JOGO, 1
-    JE      JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
+    JE      JUMP_JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
     
     FIM_DE_JOGO:
     MOV AH, 4CH
@@ -738,6 +763,8 @@ MANUAL_INSTRUCAO PROC
         PRINT_COR REGRA5, CINZA_CLARO
         POS_CURSOR 15, 5
         PRINT_COR REGRA6, CINZA_CLARO
+        POS_CURSOR 16, 5
+        PRINT_COR REGRA7, CINZA_CLARO
 
         POS_CURSOR 18, 5
         PRINT_COR REGRAS, CINZA_ESCURO
@@ -884,6 +911,8 @@ PEGAR_COORDENADAS PROC
     MOV         AH, 01H                         ; pega o caractere
     INT         21H
 
+    CMP AL, 27
+    JE ESC_PRESSED; FINALIZA O JOGO
 ;                                       ; Verifica se a linha está dentro do limite (0 a 9)
     CMP         AL, "0"
     JL          FORA_DO_MAPA                     ; Linha menor que 0, fora do mapa
@@ -909,6 +938,8 @@ PEGAR_COORDENADAS PROC
     MOV         AH, 01H                         ; pega o caractere
     INT         21h
 
+    CMP AL, 27
+    JE ESC_PRESSED; FINALIZA O JOGO
     
         ; Verifica se a coluna é uma letra minúscula (a-j)
     CMP         AL, "a"
@@ -942,6 +973,11 @@ CONTINUAR:
     POS_CURSOR  18,20
     PRINT_COR   MSG_ERRO_MAPA, VERMELHO
     JMP         PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
+
+    ESC_PRESSED:
+    CLEAR_SCREEN
+    MOV AH, 4CH
+    INT 21H
     
 PEGAR_COORDENADAS ENDP
 
@@ -1244,12 +1280,16 @@ VERIFICA_AFUNDOU PROC
     JMP         FIM_AFUNDOU
 
 ENCOURACADO_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
     PRINT_COR   ENCOURACADO_AFUNDOU_MSG, VERMELHO
     JMP         FIM_AFUNDOU
 
 FRAGATA_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contFragata
     PRINT_COR   FRAGATA_AFUNDOU_MSG, VERMELHO
@@ -1257,6 +1297,8 @@ FRAGATA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 SUBMARINOA_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contSubmarinoA
     PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO
@@ -1264,12 +1306,16 @@ SUBMARINOA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 SUBMARINOB_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contSubmarinoB
     PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO 
     JMP         FIM_AFUNDOU
 
 HIDROAVIAOA_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contHidroaviaoA
     PRINT_COR   HIDROAVIAO_AFUNDOU_MSG, VERMELHO
@@ -1277,6 +1323,8 @@ HIDROAVIAOA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 HIDROAVIAOB_AFUNDOU:
+    INC countGeral
+
     POS_CURSOR  20,25
     INC         contHidroaviaoB
     PRINT_COR   HIDROAVIAO_AFUNDOU_MSG,VERMELHO
@@ -1480,15 +1528,15 @@ PUSH_ALL
     PRINT_COR TRACINHO, AZUL
     POS_CURSOR 10, 19
     ;FAZER UM SISTEMA DE VERIFICAÇÃO DE VITORIA E DERROTA
-    ;CMP VITORIA, 1
-    ;JNE DERROTA
+    CMP countGeral, 6
+    JNE DERROTA ;Se todas as embarcações nao tiverem afundadas, mostra msg de derrota
+
     PRINT_COR MSG_FIM_JOGO_VITORIA, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE GANHOU
 JMP VERIFICA_RESPOSTA_FIM_JOGO
 
-;DERROTA:
-    ;PRINT_COR MSG_FIM_JOGO_DERROTA, VERMELHO;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE PERDEU    
-
-;JMP VERIFICA_RESPOSTA_FIM_JOGO
+DERROTA:
+    PRINT_COR MSG_FIM_JOGO_DERROTA, VERMELHO;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE PERDEU    
+JMP VERIFICA_RESPOSTA_FIM_JOGO
 
 ERRO_FIM_JOGO:
  
