@@ -577,27 +577,27 @@ MAIN PROC
     MOV ES, AX
 
     JOGAR:
-    CALL TELA_INICIAL
-    CALL MANUAL_INSTRUCAO
+    CALL        TELA_INICIAL
+    CALL        MANUAL_INSTRUCAO
 
     CLEAR_SCREEN ;LIMPA A TELA
     ENDL ;PULA UMA LINHA
-    CALL GERA_TABULEIRO ;gera o tabuleiro aleatório das embarcações
+    CALL        GERA_TABULEIRO ;gera o tabuleiro aleatório das embarcações
     ;MOSTRA A MATRIZ INICIAL NA TELA PARA O USUÁRIO
 
     ATAQUE:
-    CALL PRINT_MATRIZ ;IMPRIME A MATRIZ NA TELA
-    CALL PEGAR_COORDENADAS ;PEGA AS COORDENADAS DO ATAQUE DO USUÁRIO
+    CALL        PRINT_MATRIZ ;IMPRIME A MATRIZ NA TELA
+    CALL        PEGAR_COORDENADAS ;PEGA AS COORDENADAS DO ATAQUE DO USUÁRIO
     ENDL
-    CALL UPDATE_ATAQUE ;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO
+    CALL        UPDATE_ATAQUE ;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO
     CLEAR_SCREEN
     ;RETOMA O LOOP DE PEGAR COORDENADAS 
     PROXIMO_TIRO?:
-    CALL VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
+    CALL        VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
     ;VERIFICA_FIM_JOGO -->>FAZER UMA VARREDURA DE VERIFICAR SE AINDA EXISTE EMBARCAÇÃO VIVA. OU, PARA CADA EMBARCAÇÃO ATINGIDA ADICIONAR UM COTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA
     ;SE NAO TIVER MAIS EMBARCAÇÕES, SAI DESSE LOOP DE ATAQUE
-    JMP ATAQUE
+    JMP         ATAQUE
 
     ;SAINDO DO LOOP DE ATAQUE, MOTRA MENSAGEM DE JOGO ACABADO
     ;XOR BX,BX
@@ -616,24 +616,14 @@ MAIN PROC
     ;JMP FINALIZAR_JOGO
 
 ;TODO:
-    ;ADICIONAR ALEATORIAMENTE AS EMBARCAÇÕES NO TABULEIRO
-    ;FAZER SISTEMA DE VERIFICAR SE A EMBARCAÇÃO ESTÁ A PELO MENOS UM QUADRADO DE DISTÂNCIA DA OUTRA
-    ;FAZER LOOP DE EXIBIÇÃO DE MATRIZ APÓS CADA JOGADA 
     ;CONTABILIZAR ACERTO E ERRO DE EMBARCAÇÕES
-    ;adicionar as embarcações no mapa
-    ;verificar se as embarcações estão no mesmo lugar / estão separadas por 31H casa
-    ;pedir ao player digitar as coordenadas de tiro
-    ; Continue o jogo ou finalize se todas as embarcações forem destruídas
-    ;verificar se as cordenadas estão dentro do mapa
-    ;adicionar isso ao mapa
-    ;verificar se o tiro acertou a embarcação ou não
-    ;se acertou, marcar com cor diferente a embarcação
+    ;Continue o jogo ou finalize se todas as embarcações forem destruídas
     ;se acertou todas, finalizar o jogo
     ;jogar denovo?
 
-    CALL VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
-    CMP VAR_FIM_DE_JOGO, 1
-    JE JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
+    CALL    VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
+    CMP     VAR_FIM_DE_JOGO, 1
+    JE      JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
     
     FIM_DE_JOGO:
     MOV AH, 4CH
@@ -743,7 +733,7 @@ MANUAL_INSTRUCAO PROC
         PRINT_COR REGRAS, CINZA_ESCURO
 
         POS_CURSOR 19,8
-        PRINTS PTC
+        PRINTS PTC  
         PPC
 
         RET
@@ -762,30 +752,30 @@ MANUAL_INSTRUCAO ENDP
 PRINT_MATRIZ PROC
     PUSH_ALL
 
-    XOR BX, BX
-    XOR SI, SI
-    XOR DX, DX
+    XOR         BX, BX
+    XOR         SI, SI
+    XOR         DX, DX
     
-    MOV CX, CONTADOR ; CX RECEBE TAMANHO DA MATRIZ
+    MOV         CX, CONTADOR ; CX RECEBE TAMANHO DA MATRIZ
 
-    MOSTRAR_MATRIZ:
-    PRINTC TABULEIRO[BX][SI]
+MOSTRAR_MATRIZ:
+    PRINTC      TABULEIRO[BX][SI]
 
-    ADD SI, 2
+    ADD          SI, 2
 
-    CMP SI, FIM_LINHA
-    JA NOVA_LINHA
+    CMP         SI, FIM_LINHA
+    JA          NOVA_LINHA
 
-    LOOP MOSTRAR_MATRIZ
+    LOOP        MOSTRAR_MATRIZ
 
     NOVA_LINHA:
     ENDL
-    ADD BX, FIM_LINHA + 2
-    XOR SI, SI 
-    CMP BX, ULTIMA_POS
+    ADD         BX, FIM_LINHA + 2
+    XOR         SI, SI 
+    CMP         BX, ULTIMA_POS
 
-    JA FIM_PRINT
-    JMP MOSTRAR_MATRIZ
+    JA          FIM_PRINT
+    JMP         MOSTRAR_MATRIZ
 
     FIM_PRINT:
 
@@ -809,14 +799,14 @@ PRINT_MATRIZ ENDP
 ; 
 ;=================PROCEDIMENTO DE GERAR NÚMERO ALEATÓRIO=================}
 ALEATORIO PROC
-    MOV AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
-    INT 1AH
+    MOV         AH, 0H                     ; Chama a interrupção 1Ah para obter o número de ticks
+    INT         1AH
 
-    MOV AX, DX                     ; Coloca o valor do timer em AX
-    MOV DX, 0                      ; Limpa DX para a divisão
-    MOV BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
-    DIV BX                         ; Divide AX por 10
-    MOV NUM_ALEATORIO, DX          ; Armazena o resto (0-9) em NUM_ALEATORIO
+    MOV         AX, DX                     ; Coloca o valor do timer em AX
+    XOR         DX, DX                      ; Limpa DX para a divisão
+    MOV         BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
+    DIV         BX                         ; Divide AX por 10
+    MOV     NUM_ALEATORIO, DX          ; Armazena o resto (0-9) em NUM_ALEATORIO
     RET
 
 ALEATORIO ENDP
@@ -834,73 +824,73 @@ ALEATORIO ENDP
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR=================}
 PEGAR_COORDENADAS PROC
     ;ATACAR LINHA 
-    POS_CURSOR 0, 0
-    PRINT_COR BAT_NAV, AZUL
+    POS_CURSOR  0, 0
+    PRINT_COR   BAT_NAV, AZUL
 
-    POS_CURSOR 15, 20
-    PRINT_COR MSG_ATAQUE_LINHA, MAGENTA             ; mensagem de pegar coordenadas na tela
+    POS_CURSOR  15, 20
+    PRINT_COR   MSG_ATAQUE_LINHA, MAGENTA             ; mensagem de pegar coordenadas na tela
     
-    MOV AH, 01H                         ; pega o caractere
-    INT 21H
+    MOV         AH, 01H                         ; pega o caractere
+    INT         21H
 
 ;                                       ; Verifica se a linha está dentro do limite (0 a 9)
-    CMP AL, "0"
-    JL FORA_DO_MAPA                     ; Linha menor que 0, fora do mapa
-    CMP AL, "9"
-    JG FORA_DO_MAPA                     ; Linha maior que 9, fora do mapa
+    CMP         AL, "0"
+    JL          FORA_DO_MAPA                     ; Linha menor que 0, fora do mapa
+    CMP         AL, "9"
+    JG          FORA_DO_MAPA                     ; Linha maior que 9, fora do mapa
 
-    XOR AH, AH                          ;REMOVE A PARTE QUE NÃO É NUMERO
-    AND AL, 0FH                         ;converte para um valor numerico entre 0 e 9
-    ADD AL, 2                           ;ADD 2 PARA FICAR ENTRE VALORES DE 2 A 11, PARA ENCAIXAR NA MULTIPLICAÇÃO DA MATRIZ QUE COMEÇA EM [64,8]
+    XOR         AH, AH                          ;REMOVE A PARTE QUE NÃO É NUMERO
+    AND         AL, 0FH                         ;converte para um valor numerico entre 0 e 9
+    ADD         AL, 2                           ;ADD 2 PARA FICAR ENTRE VALORES DE 2 A 11, PARA ENCAIXAR NA MULTIPLICAÇÃO DA MATRIZ QUE COMEÇA EM [64,8]
 ;                                       ; agora, será necessário multiplicar por 24 para que ele entre de acordo com o valor da matriz
-    MOV BX, 32                          ; multiplica por 32 pq EX: 2x32=62, 3x32=96
-    MUL BX                              ; DX:AX -> AX.BX
-    MOV POS_LINHA, AX                   ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+    MOV         BX, 32                          ; multiplica por 32 pq EX: 2x32=62, 3x32=96
+    MUL         BX                              ; DX:AX -> AX.BX
+    MOV         POS_LINHA, AX                   ; joga a coordenada de tiro do jogador na variavel DE LINHA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
 ;                                      ;zera ax e bx
-    XOR AX, AX
-    XOR BX, BX
+    XOR         AX, AX
+    XOR         BX, BX
 
 ;                                       ;ATACAR COLUNA
-    POS_CURSOR 16, 20
-    PRINT_COR MSG_ATAQUE_COLUNA, CIANO            ; mensagem de pegar coordenadas na tela
+    POS_CURSOR  16, 20
+    PRINT_COR   MSG_ATAQUE_COLUNA, CIANO            ; mensagem de pegar coordenadas na tela
     
-    MOV AH, 01H                         ; pega o caractere
-    INT 21h
+    MOV         AH, 01H                         ; pega o caractere
+    INT         21h
 
     
         ; Verifica se a coluna é uma letra minúscula (a-j)
-    CMP AL, "a"
-    JL CONTINUAR
-    CMP AL, "j"
-    JG CONTINUAR
+    CMP         AL, "a"
+    JL          CONTINUAR
+    CMP         AL, "j"
+    JG          CONTINUAR
 
     ; Converte letra minúscula para maiúscula
-    SUB AL, 20H
+    SUB         AL, 20H
 
 CONTINUAR:
 
 ;                                       ; Verifica se a coluna está dentro do limite (A a J)
-    CMP AL, "A"
-    JL FORA_DO_MAPA                     ; Coluna menor que A, fora do mapa
-    CMP AL, "J"
-    JG FORA_DO_MAPA                     ; Coluna maior que J, fora do mapa
+    CMP         AL, "A"
+    JL          FORA_DO_MAPA                     ; Coluna menor que A, fora do mapa
+    CMP         AL, "J"
+    JG          FORA_DO_MAPA                     ; Coluna maior que J, fora do mapa
 
-    XOR AH, AH                          ;REMOVE A PARTE QUE NÃO É LETRA
-    SUB AL, 41H                         ; tira 41h para transformar em numero de 0 a 9
-    ADD AL, 4                           ; add 4 pq o elemento começa agora na posição [64,8], logo o primeiro A=0+4x2=8
-    MOV BX, 2                           ; multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
-    MUL BX
-    MOV POS_COLUNA, AX                  ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
+    XOR         AH, AH                          ;REMOVE A PARTE QUE NÃO É LETRA
+    SUB         AL, 41H                         ; tira 41h para transformar em numero de 0 a 9
+    ADD         AL, 4                           ; add 4 pq o elemento começa agora na posição [64,8], logo o primeiro A=0+4x2=8
+    MOV         BX, 2                           ; multiplica por 2 para que ele entre de acordo com o valor da matriz -> EX: A=(41h-40).2 = 2; B=4, C=6, isso ocorre pq a matriz vai de 2 em 2 e ela começa no 2
+    MUL         BX
+    MOV         POS_COLUNA, AX                  ; joga a coordenada de tiro do jogador na variavel DE COLUNA, mesmo estando em AL, precisa ser assim pq é 16 bits p 16 bits
 
 ;                                       ;COM ISSO FEITO, É POSSÍVEL ACESSAR A MATRIZ POR TABULEIRO[POS_LINHA][POS_COLUNA]
 ;                                       ; Se as coordenadas estão no limite do mapa, continue o programa
     RET
     FORA_DO_MAPA:
 ;                                       ; Mensagem de erro e solicitação de novas coordenadasdas
-    POS_CURSOR 18,20
-    PRINT_COR MSG_ERRO_MAPA, VERMELHO
-    JMP PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
+    POS_CURSOR  18,20
+    PRINT_COR   MSG_ERRO_MAPA, VERMELHO
+    JMP         PEGAR_COORDENADAS               ; Volta para pegar novas coordenadas
     
 PEGAR_COORDENADAS ENDP
 
@@ -921,31 +911,40 @@ PEGAR_COORDENADAS ENDP
 GERA_TABULEIRO PROC
     PUSH_ALL
 
-    CALL ALEATORIO ;PEGA NUMERO ALEATÓRIO
-    MOV AX, NUM_ALEATORIO ;ARMAZENA O NUMERO ALEATÓRIO EM AX
+    CALL        ALEATORIO ;PEGA NUMERO ALEATÓRIO
+    MOV         AX, NUM_ALEATORIO ;ARMAZENA O NUMERO ALEATÓRIO EM AX
 
 SWITCH:
     ; COMPARA AX COM 0 A 9, PARA VER QUAL CASO UTILIZAR
-    CMP AX, 0
-    JZ CASE_0
-    CMP AX, 1
-    JE CASE_1
-    CMP AX, 2
-    JE CASE_2
-    CMP AX, 3
-    JE CASE_3
-    CMP AX, 4
-    JE CASE_4
-    CMP AX, 5
-    JE CASE_5
-    CMP AX, 6
-    JE CASE_6
-    CMP AX, 7
-    JE CASE_7
-    CMP AX, 8
-    JE CASE_8
-    CMP AX, 9
-    JE CASE_9
+    CMP         AX, 0
+    JZ          CASE_0
+
+    CMP         AX, 1
+    JE          CASE_1
+
+    CMP         AX, 2
+    JE          CASE_2
+
+    CMP         AX, 3
+    JE          CASE_3
+
+    CMP         AX, 4
+    JE          CASE_4
+
+    CMP         AX, 5
+    JE          CASE_5
+
+    CMP         AX, 6
+    JE          CASE_6
+
+    CMP         AX, 7
+    JE          CASE_7
+
+    CMP         AX, 8
+    JE          CASE_8
+
+    CMP         AX, 9
+    JE          CASE_9
 
     ;JMP DEFAULT deixa JE CASE_9 fora de alcance
     ;CASOS DE 0 A 9, CADA CASO UTILIZA UM TABULEIRO DIFERENTE
@@ -955,97 +954,95 @@ SWITCH:
     ;CX RECEBE O TAMANHO DA STRING, PARA SABER QUANTOS ELEMENTOS COPIAR
     ;UTILIZA REP MOVSW PARA COPIAR STRING EM OUTRA
 CASE_0:
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_0 
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_0 
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_1:
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_1
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_1
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_2:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_2
-    MOV DI, OFFSET TABULEIRO_AUX
-
-    REP MOVSW
-    JMP END_SWITCH
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_2
+    MOV         DI, OFFSET TABULEIRO_AUX
+    
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_3:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_3
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_3
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_4:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_4
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_4
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_5:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_5
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_5
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_6:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_6
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_6
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_7:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_7
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_7
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_8:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_8
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_8
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 CASE_9:
 
-    MOV CX, CONTADOR
-    MOV SI, OFFSET TABULEIRO_9
-    MOV DI, OFFSET TABULEIRO_AUX
+    MOV         CX, CONTADOR
+    MOV         SI, OFFSET TABULEIRO_9
+    MOV         DI, OFFSET TABULEIRO_AUX
 
-    REP MOVSW
-    JMP END_SWITCH
+    REP         MOVSW
+    JMP         END_SWITCH
 
 ;DEFAULT:
-
 ;   JMP SWITCH ;FICA FORA DE ALCANCE CASO DEFINIDO, LOGO EVITEI UTILIZAR
-
 END_SWITCH:
     ; FINALIZA O PROCEDIMENTO
     POP_ALL
@@ -1057,92 +1054,99 @@ UPDATE_ATAQUE PROC;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO PROC
     PUSH_ALL
     ;DI deve permanescer com o offsets da geração de tabuleiro AUX
 
-    MOV AX, POS_LINHA      ; AX = linha
-    ADD AX, POS_COLUNA     ;(deslocamento final)
+    MOV         AX, POS_LINHA      ; AX = linha
+    ADD         AX, POS_COLUNA     ;(deslocamento final)
     
     ; Carregar o valor da posição na matriz
-    LEA SI, TABULEIRO      ; SI aponta para o início da MATRIZ NORMAL
-    LEA DI, TABULEIRO_AUX  ; DI aponta para o início da MATRIZ AUXILIAR
-    ADD SI, AX               ; SI aponta para a posição na matriz normal
-    ADD DI, AX              ; DI aponta para o elemento da matriz[linha][coluna] do tabuleiro inimigo
-    MOV BX, [DI]            ;COMPARA COM O TABULEIRO AUX, DO INIMIGO
+    LEA         SI, TABULEIRO      ; SI aponta para o início da MATRIZ NORMAL
+    LEA         DI, TABULEIRO_AUX  ; DI aponta para o início da MATRIZ AUXILIAR
+    ADD         SI, AX               ; SI aponta para a posição na matriz normal
+    ADD         DI, AX              ; DI aponta para o elemento da matriz[linha][coluna] do tabuleiro inimigo
+    MOV         BX, [DI]            ;COMPARA COM O TABULEIRO AUX, DO INIMIGO
 ;
     ;verificar se o tiro acertou a embarcação ou não
     ;COMPARA COM CADA UMA EMBARCAÇÃO NA MATRIZ AUX
-    CMP BX, "f"
-    JE ACERTO_FRAGATA
-    CMP BX, "e"
-    JE ACERTO_ENCORACADO
-    CMP BX, "S"
-    JE ACERTO_SUBMARINOA
-    CMP BX, "s"
-    JE ACERTO_SUBMARINOB
-    CMP BX, "a"
-    JE ACERTO_HIDROAVIAOA
-    CMP BX, "h"
-    JE ACERTO_HIDROAVIAOB
-    CMP BX, 16h
-    JE REPETIDO
-    CMP BX, 0F7H
-    JE REPETIDO
+    CMP         BX, "f"
+    JE          ACERTO_FRAGATA
+
+    CMP         BX, "e"
+    JE          ACERTO_ENCORACADO
+
+    CMP         BX, "S"
+    JE          ACERTO_SUBMARINOA
+
+    CMP         BX, "s"
+    JE          ACERTO_SUBMARINOB
+
+    CMP         BX, "a"
+    JE          ACERTO_HIDROAVIAOA
+
+    CMP         BX, "h"
+    JE          ACERTO_HIDROAVIAOB
+
+    CMP         BX, 16h
+    JE          REPETIDO
+
+    CMP         BX, 0F7H
+    JE          REPETIDO
                           ;Verifica se a célula contém uma embarcação
 
 ERROU:
     ; Atualiza o mapa para mostrar o erro (marcar com outro símbolo, ex: '~')
-    MOV WORD PTR [SI], 0F7h          ; Marcar erro com '~' no tabuleiro normal
-    MOV WORD PTR [DI], 0F7h         ; Marcar erro com '~' no tabuleiro auxiliar para depois comparar com os novos ataques em CALL VERIFICA AFUNDOU 
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 0F7h          ; Marcar erro com '~' no tabuleiro normal
+    MOV         WORD PTR [DI], 0F7h         ; Marcar erro com '~' no tabuleiro auxiliar para depois comparar com os novos ataques em CALL VERIFICA AFUNDOU 
+    JMP         FIM_VERIFICACAO
     
     ;dec os cotadores: contFragata DB 3, contEncouracado DB 4, contSubmarino1 DB 2, contSubmarino2 DB 2, contHidroaviao1 DB 4, contHidroaviao2 DB 4
 
     ACERTO_FRAGATA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h ;TABULEIRO
-    MOV WORD PTR [DI], 16h ;TABULEIRO AUX
-    DEC contFragata
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h ;TABULEIRO
+    MOV         WORD PTR [DI], 16h ;TABULEIRO AUX
+    DEC         contFragata
+    JMP         FIM_VERIFICACAO
 
     ACERTO_ENCORACADO:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h   
-    MOV WORD PTR [DI], 16h 
-    DEC contEncouracado        
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h   
+    MOV         WORD PTR [DI], 16h 
+    DEC         contEncouracado        
+    JMP         FIM_VERIFICACAO
 
     ACERTO_SUBMARINOA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h
-    MOV WORD PTR [DI], 16h
-    DEC contSubmarinoA
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h
+    MOV         WORD PTR [DI], 16h
+    DEC         contSubmarinoA
+    JMP         FIM_VERIFICACAO
 
     ACERTO_SUBMARINOB:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h   
-    MOV WORD PTR [DI], 16h
-    DEC contSubmarinoB
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h   
+    MOV         WORD PTR [DI], 16h
+    DEC         contSubmarinoB
+    JMP         FIM_VERIFICACAO
 
     ACERTO_HIDROAVIAOA:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h  
-    MOV WORD PTR [DI], 16h
-    DEC contHidroaviaoA
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h  
+    MOV         WORD PTR [DI], 16h
+    DEC         contHidroaviaoA
+    JMP         FIM_VERIFICACAO
 
     ACERTO_HIDROAVIAOB:
     ; Atualiza o mapa para mostrar o acerto
-    MOV WORD PTR [SI], 16h   
-    MOV WORD PTR [DI], 16h       
-    DEC contHidroaviaoB   
-    JMP FIM_VERIFICACAO
+    MOV         WORD PTR [SI], 16h   
+    MOV         WORD PTR [DI], 16h       
+    DEC         contHidroaviaoB   
+    JMP         FIM_VERIFICACAO
 
     ;verificar se a cordenada ja foi atacada e mostrar mensagem disso
     REPETIDO:
-    POS_CURSOR 5,25
-    PRINT_COR MSG_COORDENADA_REPETIDA, VERMELHO
-    POS_CURSOR 6, 22
-    PRINT_COR PTC, CINZA_ESCURO
+    POS_CURSOR  5,25
+    PRINT_COR   MSG_COORDENADA_REPETIDA, VERMELHO
+    POS_CURSOR  6, 22
+    PRINT_COR   PTC, CINZA_ESCURO
     PPC 
     ENDL
     
@@ -1178,71 +1182,71 @@ VERIFICA_AFUNDOU PROC
     ;compara os cotadores:
     ;contFragata DB 3, contEncouracado DB 4, contSubmarino1 DB 2, contSubmarino2 DB 2, contHidroaviao1 DB 4, contHidroaviao2 DB 4
 
-    CMP contEncouracado, 0
-    JE ENCOURACADO_AFUNDOU
+    CMP         contEncouracado, 0
+    JE          ENCOURACADO_AFUNDOU
 
-    CMP contFragata, 0
-    JE FRAGATA_AFUNDOU
+    CMP         contFragata, 0
+    JE          FRAGATA_AFUNDOU
 
-    CMP contSubmarinoA, 0
-    JE SUBMARINOA_AFUNDOU
+    CMP         contSubmarinoA, 0
+    JE          SUBMARINOA_AFUNDOU
 
 
-    JMP GAMBIARRA
+    JMP         GAMBIARRA
     VOLTA:
 
-    JMP FIM_AFUNDOU
+    JMP         FIM_AFUNDOU
 
 ENCOURACADO_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
-    PRINT_COR ENCOURACADO_AFUNDOU_MSG, VERMELHO
-    JMP FIM_AFUNDOU
+    POS_CURSOR  20,25
+    INC         contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
+    PRINT_COR   ENCOURACADO_AFUNDOU_MSG, VERMELHO
+    JMP         FIM_AFUNDOU
 
 FRAGATA_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contFragata
-    PRINT_COR FRAGATA_AFUNDOU_MSG, VERMELHO
+    POS_CURSOR  20,25
+    INC         contFragata
+    PRINT_COR   FRAGATA_AFUNDOU_MSG, VERMELHO
     
-    JMP FIM_AFUNDOU
+    JMP         FIM_AFUNDOU
 
 SUBMARINOA_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contSubmarinoA
-    PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO
+    POS_CURSOR  20,25
+    INC         contSubmarinoA
+    PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO
     
-    JMP FIM_AFUNDOU
+    JMP         FIM_AFUNDOU
 
 SUBMARINOB_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contSubmarinoB
-    PRINT_COR SUBMARINO_AFUNDOU_MSG, VERMELHO 
-    JMP FIM_AFUNDOU
+    POS_CURSOR  20,25
+    INC         contSubmarinoB
+    PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO 
+    JMP         FIM_AFUNDOU
 
 HIDROAVIAOA_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contHidroaviaoA
-    PRINT_COR HIDROAVIAO_AFUNDOU_MSG, VERMELHO
+    POS_CURSOR  20,25
+    INC         contHidroaviaoA
+    PRINT_COR   HIDROAVIAO_AFUNDOU_MSG, VERMELHO
     
-    JMP FIM_AFUNDOU
+    JMP         FIM_AFUNDOU
 
 HIDROAVIAOB_AFUNDOU:
-    POS_CURSOR 20,25
-    INC contHidroaviaoB
-    PRINT_COR HIDROAVIAO_AFUNDOU_MSG,VERMELHO
-    JMP FIM_AFUNDOU
+    POS_CURSOR  20,25
+    INC         contHidroaviaoB
+    PRINT_COR   HIDROAVIAO_AFUNDOU_MSG,VERMELHO
+    JMP         FIM_AFUNDOU
     
 GAMBIARRA:
-    CMP contSubmarinoB, 0
-    JE SUBMARINOB_AFUNDOU
+    CMP         contSubmarinoB, 0
+    JE          SUBMARINOB_AFUNDOU
 
-    CMP contHidroaviaoA, 0
-    JE HIDROAVIAOA_AFUNDOU
+    CMP         contHidroaviaoA, 0
+    JE          HIDROAVIAOA_AFUNDOU
 
-    CMP contHidroaviaoB, 0
-    JE HIDROAVIAOB_AFUNDOU
+    CMP         contHidroaviaoB, 0
+    JE          HIDROAVIAOB_AFUNDOU
 
-    JMP VOLTA
+    JMP         VOLTA
 
 FIM_AFUNDOU:
     ENDL
@@ -1266,207 +1270,207 @@ PUSH_ALL
     CLEAR_SCREEN
     ; Desenho do primeiro navio (esquerdo)
     ; Mastro principal com cordas
-    POS_CURSOR 19, 25
-    PRINTS MASTRO
-    POS_CURSOR 20, 25
-    PRINTS MASTRO
-    POS_CURSOR 21, 25
-    PRINTS MASTRO
+    POS_CURSOR      19, 25
+    PRINTS          MASTRO
+    POS_CURSOR      20, 25
+    PRINTS          MASTRO
+    POS_CURSOR      21, 25
+    PRINTS          MASTRO
     
     ; Cordas do mastro
-    POS_CURSOR 19, 24
-    PRINTS CORDA
-    POS_CURSOR 19, 26
-    PRINTS CORDA
+    POS_CURSOR      19, 24
+    PRINTS          CORDA
+    POS_CURSOR      19, 26
+    PRINTS          CORDA
     
 
     ; Segunda vela
-    POS_CURSOR 20, 23
-    PRINTS VELA3
-    POS_CURSOR 21, 23
-    PRINTS VELA2
+    POS_CURSOR      20, 23
+    PRINTS          VELA3
+    POS_CURSOR      21, 23
+    PRINTS          VELA2
 
     ; Casco do primeiro navio
-    POS_CURSOR 22, 20
-    PRINTS CASCO3
-    POS_CURSOR 22, 21
-    PRINTS CASCO2
-    POS_CURSOR 22, 22
-    PRINTS CASCO1
-    POS_CURSOR 22, 23
-    PRINTS CASCO1
-    POS_CURSOR 22, 24
-    PRINTS CASCO1
-    POS_CURSOR 22, 25
-    PRINTS CASCO1
-    POS_CURSOR 22, 26
-    PRINTS CASCO1
-    POS_CURSOR 22, 27
-    PRINTS CASCO1
-    POS_CURSOR 22, 28
-    PRINTS CASCO2
-    POS_CURSOR 22, 29
-    PRINTS CASCO3
+    POS_CURSOR      22, 20
+    PRINTS          CASCO3
+    POS_CURSOR      22, 21
+    PRINTS          CASCO2
+    POS_CURSOR      22, 22
+    PRINTS          CASCO1
+    POS_CURSOR      22, 23
+    PRINTS          CASCO1
+    POS_CURSOR      22, 24
+    PRINTS          CASCO1
+    POS_CURSOR      22, 25
+    PRINTS          CASCO1
+    POS_CURSOR      22, 26
+    PRINTS          CASCO1
+    POS_CURSOR      22, 27
+    PRINTS          CASCO1
+    POS_CURSOR      22, 28
+    PRINTS          CASCO2
+    POS_CURSOR      22, 29
+    PRINTS          CASCO3
 
     ; Base do casco primeiro navio
-    POS_CURSOR 23, 21
-    PRINTS CASCO1
-    POS_CURSOR 23, 22
-    PRINTS CASCO1
-    POS_CURSOR 23, 23
-    PRINTS CASCO1
-    POS_CURSOR 23, 24
-    PRINTS CASCO1
-    POS_CURSOR 23, 25
-    PRINTS CASCO1
-    POS_CURSOR 23, 26
-    PRINTS CASCO1
-    POS_CURSOR 23, 27
-    PRINTS CASCO1
-    POS_CURSOR 23, 28
-    PRINTS CASCO1
+    POS_CURSOR      23, 21
+    PRINTS          CASCO1
+    POS_CURSOR      23, 22
+    PRINTS          CASCO1
+    POS_CURSOR      23, 23
+    PRINTS          CASCO1
+    POS_CURSOR      23, 24
+    PRINTS          CASCO1
+    POS_CURSOR      23, 25
+    PRINTS          CASCO1
+    POS_CURSOR      23, 26
+    PRINTS          CASCO1
+    POS_CURSOR      23, 27
+    PRINTS          CASCO1
+    POS_CURSOR      23, 28
+    PRINTS          CASCO1
 
 ; Desenho do segundo navio (direito)
     ; Mastro principal com cordas
-    POS_CURSOR 19, 45
-    PRINTS MASTRO
-    POS_CURSOR 20, 45
-    PRINTS MASTRO
-    POS_CURSOR 21, 45
-    PRINTS MASTRO
+    POS_CURSOR      19, 45
+    PRINTS          MASTRO
+    POS_CURSOR      20, 45
+    PRINTS          MASTRO
+    POS_CURSOR      21, 45
+    PRINTS          MASTRO
     
     ; Cordas do mastro
-    POS_CURSOR 19, 44
-    PRINTS CORDA
-    POS_CURSOR 19, 46
-    PRINTS CORDA
+    POS_CURSOR      19, 44
+    PRINTS          CORDA
+    POS_CURSOR      19, 46
+    PRINTS          CORDA
     
     ; Vela principal
-    POS_CURSOR 19, 46
-    PRINTS VELA1
-    POS_CURSOR 20, 46
-    PRINTS VELA3
-    POS_CURSOR 21, 46
-    PRINTS VELA2
+    POS_CURSOR      19, 46
+    PRINTS          VELA1
+    POS_CURSOR      20, 46
+    PRINTS          VELA3
+    POS_CURSOR      21, 46
+    PRINTS          VELA2
 
     ; Segunda vela
-    POS_CURSOR 20, 43
-    PRINTS VELA3
-    POS_CURSOR 21, 43
-    PRINTS VELA2
+    POS_CURSOR      20, 43
+    PRINTS          VELA3
+    POS_CURSOR      21, 43
+    PRINTS          VELA2
 
     ; Casco do segundo navio
-    POS_CURSOR 22, 40
-    PRINTS CASCO3
-    POS_CURSOR 22, 41
-    PRINTS CASCO2
-    POS_CURSOR 22, 42
-    PRINTS CASCO1
-    POS_CURSOR 22, 43
-    PRINTS CASCO1
-    POS_CURSOR 22, 44
-    PRINTS CASCO1
-    POS_CURSOR 22, 45
-    PRINTS CASCO1
-    POS_CURSOR 22, 46
-    PRINTS CASCO1
-    POS_CURSOR 22, 47
-    PRINTS CASCO1
-    POS_CURSOR 22, 48
-    PRINTS CASCO2
-    POS_CURSOR 22, 49
-    PRINTS CASCO3
+    POS_CURSOR      22, 40
+    PRINTS          CASCO3
+    POS_CURSOR      22, 41
+    PRINTS          CASCO2
+    POS_CURSOR      22, 42
+    PRINTS          CASCO1
+    POS_CURSOR      22, 43
+    PRINTS          CASCO1
+    POS_CURSOR      22, 44
+    PRINTS          CASCO1
+    POS_CURSOR      22, 45
+    PRINTS          CASCO1
+    POS_CURSOR      22, 46
+    PRINTS          CASCO1
+    POS_CURSOR      22, 47
+    PRINTS          CASCO1
+    POS_CURSOR      22, 48
+    PRINTS          CASCO2
+    POS_CURSOR      22, 49
+    PRINTS          CASCO3
 
     ; Base do casco segundo navio
-    POS_CURSOR 23, 41
-    PRINTS CASCO1
-    POS_CURSOR 23, 42
-    PRINTS CASCO1
-    POS_CURSOR 23, 43
-    PRINTS CASCO1
-    POS_CURSOR 23, 44
-    PRINTS CASCO1
-    POS_CURSOR 23, 45
-    PRINTS CASCO1
-    POS_CURSOR 23, 46
-    PRINTS CASCO1
-    POS_CURSOR 23, 47
-    PRINTS CASCO2
-    POS_CURSOR 23, 48
-    PRINTS CASCO3
+    POS_CURSOR      23, 41
+    PRINTS          CASCO1
+    POS_CURSOR      23, 42
+    PRINTS          CASCO1
+    POS_CURSOR      23, 43
+    PRINTS          CASCO1
+    POS_CURSOR      23, 44
+    PRINTS          CASCO1
+    POS_CURSOR      23, 45
+    PRINTS          CASCO1
+    POS_CURSOR      23, 46
+    PRINTS          CASCO1
+    POS_CURSOR      23, 47
+    PRINTS          CASCO2
+    POS_CURSOR      23, 48
+    PRINTS          CASCO3
 
         ; Agua
-    POS_CURSOR 24, 0
-    PRINT_COR AGUA, AZUL
+    POS_CURSOR      24, 0
+    PRINT_COR       AGUA, AZUL
   
 
     ;MOSTRA MENSAGEM DE JOGO ACABADO
-    POS_CURSOR 5, 10
-    PRINT_COR R0, AZUL
-    POS_CURSOR 6, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 7, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 8, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 9, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 11, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 12, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 13, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 14, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 15, 10
-    PRINT_COR R, AZUL
-    POS_CURSOR 16, 10
-    PRINT_COR R10, AZUL
+    POS_CURSOR      5, 10
+    PRINT_COR       R0, AZUL
+    POS_CURSOR      6, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      7, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      8, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      9, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      11, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      12, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      13, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      14, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      15, 10
+    PRINT_COR       R, AZUL
+    POS_CURSOR      16, 10
+    PRINT_COR       R10, AZUL
 
-    POS_CURSOR 10, 71
-    PRINT_COR TRACINHO, AZUL ;PRINTA O FINAL DA BOX EM QUE A MENSAGEM ESTA INSERIDA
-    POS_CURSOR 10, 10
-    PRINT_COR TRACINHO, AZUL
-    POS_CURSOR 10, 19
-    PRINT_COR MSG_FIM_JOGO, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO
+    POS_CURSOR      10, 71
+    PRINT_COR       TRACINHO, AZUL ;PRINTA O FINAL DA BOX EM QUE A MENSAGEM ESTA INSERIDA
+    POS_CURSOR      10, 10
+    PRINT_COR       TRACINHO, AZUL
+    POS_CURSOR      10, 19
+    PRINT_COR       MSG_FIM_JOGO, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO
 
 
-JMP VERIFICA_RESPOSTA_FIM_JOGO
+JMP             VERIFICA_RESPOSTA_FIM_JOGO
 
 ERRO_FIM_JOGO:
  
-    POS_CURSOR 11, 16
-    PRINT_COR MSG_ERRO_FIM_JOGO, CIANO ;PRINTA A MENSAGEM DE ERRO DE FIM DE JOGO
+    POS_CURSOR      11, 16
+    PRINT_COR       MSG_ERRO_FIM_JOGO, CIANO ;PRINTA A MENSAGEM DE ERRO DE FIM DE JOGO
 
 VERIFICA_RESPOSTA_FIM_JOGO:
-    MOV AH, 01
-    INT 21H
+    MOV             AH, 01
+    INT             21H
 
         ; Verifica se a coluna é uma letra minúscula (a-z)
-    CMP AL, "a"
-    JL CONTINUAR1
-    CMP AL, "z"
-    JG CONTINUAR1
+    CMP             AL, "a"
+    JL              CONTINUAR1
+    CMP             AL, "z"
+    JG              CONTINUAR1
 
     ; Converte letra minúscula para maiúscula
-    SUB AL, 20H
+    SUB             AL, 20H
 CONTINUAR1:
 
-    CMP AL, 'S'
-    JE CONTINUAR_JOGO
-    CMP AL, 'N'
-    JE PARAR_JOGO
+    CMP             AL, 'S'
+    JE              CONTINUAR_JOGO
+    CMP             AL, 'N'
+    JE              PARAR_JOGO
 
-    JMP ERRO_FIM_JOGO
+    JMP             ERRO_FIM_JOGO
 
    PARAR_JOGO:
-    MOV VAR_FIM_DE_JOGO, 0
+    MOV             VAR_FIM_DE_JOGO, 0
     POP_ALL
     RET
 
     CONTINUAR_JOGO:
-    MOV VAR_FIM_DE_JOGO, 1
+    MOV             VAR_FIM_DE_JOGO, 1
     POP_ALL
     RET
 VERIFICA_FIM_JOGO ENDP
@@ -1483,31 +1487,29 @@ VERIFICA_FIM_JOGO ENDP
 ;
 ;====================PROCEDIMENTO PARA MUDAR COR DE STRINGS=====================}
 MUDA_COR PROC                  ;Funcao imprime_color
-    PUSH AX                         ;Feita para padronizar a impressao de cor ao longo do programa e
-    PUSH CX                         ;quando for feita a chamada dela apenas precisa passar o parametro
-    PUSH SI                         ;de cor para BL.
+    PUSH            AX                         ;Feita para padronizar a impressao de cor ao longo do programa e
+    PUSH            CX                         ;quando for feita a chamada dela apenas precisa passar o parametro
+    PUSH            SI                         ;de cor para BL.
     
-    XOR BH, BH                      ;Zera bit superior de bx
-    MOV CX,1 
+    XOR             BH, BH                      ;Zera bit superior de bx
+    MOV             CX,1 
     
     REPETE:               
-        MOV AH, 9                  ;chama a funcao de colocar o caracter na tela                     
-        MOV AL,[SI]                ;incrementa para poder ir para o proximo caracter e imprimir a string totalmente 
-        INT 10H 
+    MOV             AH, 9                  ;chama a funcao de colocar o caracter na tela                     
+    MOV             AL,[SI]                ;incrementa para poder ir para o proximo caracter e imprimir a string totalmente 
+    INT             10H 
        
-        INC SI 
-        TAB 1
+    INC             SI 
+    TAB             1
         
-        MOV AL,[SI]
-        CMP AL,'$'
-        JNE REPETE                  ;Fim de string marcada com $, logo enuanto for diferente, percorre a string
+    MOV             AL,[SI]
+    CMP             AL,'$'
+    JNE             REPETE                  ;Fim de string marcada com $, logo enuanto for diferente, percorre a string
     
-    POP SI
-    POP CX
-    POP AX    
+    POP             SI
+    POP             CX
+    POP             AX    
     RET  
 MUDA_COR ENDP
-
-
 
 END MAIN
