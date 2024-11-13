@@ -542,7 +542,7 @@ TABULEIRO_INICIAL           DW 0C9h, 14 DUP(0CDh), 0BBh
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
     MSG_ATAQUE_LINHA        DB  "Digite o numero da linha para o ataque: $"
-    MSG_ATAQUE_COLUNA       DB  "Digite o letra da coluna para o ataque: $"
+    MSG_ATAQUE_COLUNA       DB  "Digite a letra da coluna para o ataque: $"
     POS_LINHA               DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA              DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
     MSG_ERRO_MAPA           DB "Coordenada invalida!! $"
