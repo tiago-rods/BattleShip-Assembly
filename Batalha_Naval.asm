@@ -299,7 +299,6 @@ ENDM
     CINZA_ESCURO    EQU 1000b               
     CIANO           EQU 0011b
     MAGENTA         EQU 0101b
-    LARANJA         EQU 110110b
 
 
 ;==========================================TAGLINES
@@ -517,6 +516,7 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 ;======================================= OUTRAS STRINGS
 
     PTC                 DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
+    MSG_SAIDA_JOGO      DB "-->ESC PARA SAIR<--$"
 
 ;======================================= STRINGS PARA MANUAL DE INSTRUÇÃO
 
@@ -543,10 +543,10 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
     MSG_ATAQUE_LINHA    DB  "Digite o numero da linha para o ataque: $"
-    MSG_ATAQUE_COLUNA   DB  "Digite o numero da coluna para o ataque: $"
+    MSG_ATAQUE_COLUNA   DB  "Digite o letra da coluna para o ataque: $"
     POS_LINHA           DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
     POS_COLUNA          DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
-    MSG_ERRO_MAPA       DB "Coordenada invalidas!! $"
+    MSG_ERRO_MAPA       DB "Coordenada invalida!! $"
   
 
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
@@ -579,14 +579,14 @@ TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
 
 ;====================================== STRING PARA PROCEDIMENTO "UPDATE TABELA NAVIOS"
 
-TABELA_FRAGATA DB "FRAGATA: $"
-TABELA_SUBMARINO DB "SUBMARINO: $"
-TABELA_HIDROAVIAO DB "HIDROAVIAO: $"
-TABELA_ENCOURACADO DB "ENCOURACADO: $"
-COUNT_TABELA_FRAGATA DB 1
-COUNT_TABELA_SUBMARINO DB 2
-COUNT_TABELA_HIDROAVIAO DB 2
-COUNT_TABELA_ENCOURACADO DB 1
+TABELA_FRAGATA              DB "FRAGATA: $"
+TABELA_SUBMARINO            DB "SUBMARINO: $"
+TABELA_HIDROAVIAO           DB "HIDROAVIAO: $"
+TABELA_ENCOURACADO          DB "ENCOURACADO: $"
+COUNT_TABELA_FRAGATA        DB 1
+COUNT_TABELA_SUBMARINO      DB 2
+COUNT_TABELA_HIDROAVIAO     DB 2
+COUNT_TABELA_ENCOURACADO    DB 1
 ;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
 
     CONTADOR            EQU 208
@@ -799,10 +799,10 @@ MANUAL_INSTRUCAO PROC
         POS_CURSOR 16, 5
         PRINT_COR REGRA7, CINZA_CLARO
 
-        POS_CURSOR 18, 5
+        POS_CURSOR 19, 5
         PRINT_COR REGRAS, CINZA_ESCURO
 
-        POS_CURSOR 19,8
+        POS_CURSOR 20,15
         PRINTS PTC  
         PPC
 
@@ -925,8 +925,9 @@ ALEATORIO ENDP
 
 ;=================PROCEDIMENTO PARA PEGAR POSIÇÃO DE ATAQUE DO JOGADOR================={
 ;
-;  FUNÇÃO: PEGAR RESPECTIVAMENTE LINHA E COLUNA A QUAL O JOGADOR DESEJA ATACAR, ADEMAIS
-;  VERIFICA SE O LOCAL ESTÁ DENTRO OU FORA DA ÁREA DE ATAQUE
+;  FUNÇÃO: PEGAR RESPECTIVAMENTE LINHA E COLUNA A QUAL O JOGADOR DESEJA ATACAR,
+;  VERIFICA SE O LOCAL ESTÁ DENTRO OU FORA DA ÁREA DE ATAQUE, ADEMAIS VERIFICA
+;  SE 'ESC' FPO PRESSIONADO, CASO TENHA, ACABA O JOGO 
 ;  
 ;  COMO USAR: CHAMAR QUANDO O JOGADOR FOR ATACAR
 ;
@@ -938,13 +939,16 @@ PEGAR_COORDENADAS PROC
     POS_CURSOR  0, 0
     PRINT_COR   BAT_NAV, AZUL
 
+    POS_CURSOR 1, 30
+    PRINT_COR MSG_SAIDA_JOGO, VERMELHO
+
     POS_CURSOR  15, 20
     PRINT_COR   MSG_ATAQUE_LINHA, MAGENTA             ; mensagem de pegar coordenadas na tela
     
     MOV         AH, 01H                         ; pega o caractere
     INT         21H
 
-    CMP AL, 27
+    CMP AL, 27     ; COMPARA COM CARACTER ESC
     JE ESC_PRESSED; FINALIZA O JOGO
 ;                                       ; Verifica se a linha está dentro do limite (0 a 9)
     CMP         AL, "0"
@@ -1651,12 +1655,12 @@ VERIFICA_FIM_JOGO ENDP
 ;   MACROS USADOS: TAB
 ;
 ;====================PROCEDIMENTO PARA MUDAR COR DE STRINGS=====================}
-MUDA_COR PROC                  ;Funcao imprime_color
+MUDA_COR PROC               
     PUSH            AX                         ;Feita para padronizar a impressao de cor ao longo do programa e
     PUSH            CX                         ;quando for feita a chamada dela apenas precisa passar o parametro
     PUSH            SI                         ;de cor para BL.
     
-    XOR             BH, BH                      ;Zera bit superior de bx
+    XOR             BH, BH                 ;Zera bit superior de bx(bh é utilizado para mudar a cor do fundo)
     MOV             CX,1 
     
     REPETE:               
