@@ -278,8 +278,6 @@ INT 21H
 POP_ALL
 ENDM
 
-
-
 .MODEL SMALL
 .STACK 100H
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -288,288 +286,275 @@ ENDM
 .DATA
 ;======================================= CONSTANTES
 
-    LINHAS_COLUNAS  EQU 10
+    LINHAS_COLUNAS          EQU 10
 
 ;===============================================CONTANTES DE CORES
 
-    VERDE           EQU 0010b
-    VERMELHO        EQU 0100b
-    AZUL            EQU 0001b
-    CINZA_CLARO     EQU 0111b
-    CINZA_ESCURO    EQU 1000b               
-    CIANO           EQU 0011b
-    MAGENTA         EQU 0101b
+    VERDE                   EQU 0010b
+    VERMELHO                EQU 0100b
+    AZUL                    EQU 0001b
+    CINZA_CLARO             EQU 0111b
+    CINZA_ESCURO            EQU 1000b               
+    CIANO                   EQU 0011b
+    MAGENTA                 EQU 0101b
 
 
 ;==========================================TAGLINES
 
-    BY       DB "DESENVOLVIDO POR: $"
-    TIAGO    DB "TIAGO ALVES RODRIGUES$"
-    RAFAEL   DB "RAFAEL MARTINIANO NOGUEIRA FILHO$"
-    ARTUR    DB "ARTUR YANO CONTARELLI$"
+    BY                      DB "DESENVOLVIDO POR: $"
+    TIAGO                   DB "TIAGO ALVES RODRIGUES$"
+    RAFAEL                  DB "RAFAEL MARTINIANO NOGUEIRA FILHO$"
+    ARTUR                   DB "ARTUR YANO CONTARELLI$"
 
 ;======================================= VETORES PARA DESENHO DE LOGO
 ; L0 A L5 ESCREVEM A PALAVRA "BATALHA"
-    L0 DB 0C9h, 37 DUP(0CDh),0BBh,"$"
-    L1 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 32,0DBh,32, 32,32, 0BAh, "$"
-    L2 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh, 32,32,  0BAh,  "$"
-    L3 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,0DBh,0DBh, 32,32, 0BAh, "$"
-    L4 DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,  "$"
-    L5 DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,"$"
+    L0                      DB 0C9h, 37 DUP(0CDh),0BBh,"$"
+    L1                      DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 32,0DBh,32, 32,32, 0BAh, "$"
+    L2                      DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh, 32,32,  0BAh,  "$"
+    L3                      DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 32,0DBh,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,32, 32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,0DBh,0DBh, 32,32, 0BAh, "$"
+    L4                      DB 0BAh, 32,32, 0DBh,32,0DBh, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,  "$"
+    L5                      DB 0BAh, 32,32, 0DBh,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 32,0DBh,32, 32,32, 0DBh,32,0DBh,  32,32, 0DBh,0DBh,0DBh,   32,32, 0DBh,32,0DBh,  32,32, 0DBh,32,0DBh, 32,32, 0BAh,"$"
 ; L É APENAS PARA DESENHO ENTRE PALAVRAS
-    L  DB 0BAh, 37 DUP(32), 0BAh, "$"
+    L                       DB 0BAh, 37 DUP(32), 0BAh, "$"
 ; L6 A L9 ESCREVEM A PALAVRA "NAVAL"
-    L6 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  32,0DBh,0DBh,32,    32,32,  0DBh,32,32,0DBh, 32,32, 32,0DBh,0DBh,32, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
-    L7 DB 0BAh, 4 DUP(32), 0DBh,0DBh,32,0DBh,  32,32,  0DBh,32,32,0DBh,   32,32,  0DBh,32,32,0DBh, 32,32, 0DBh,32,32,0DBh,  32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
-    L8 DB 0BAh, 4 DUP(32), 0DBh,32,0DBh,0DBh,  32,32,  0DBh,0DBh,0DBh,0DBh,   32,32,  0DBh,32,32,0DBh,  32,32, 0DBh,0DBh,0DBh,0DBh,   32,32,   0DBh,32,32,32, 5 DUP(32), 0BAh,"$"
-    L9 DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh,"$"
-   L10 DB 0C8h, 37 DUP(0CDh), 0BCh, "$"
+    L6                      DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  32,0DBh,0DBh,32,    32,32,  0DBh,32,32,0DBh, 32,32, 32,0DBh,0DBh,32, 32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
+    L7                      DB 0BAh, 4 DUP(32), 0DBh,0DBh,32,0DBh,  32,32,  0DBh,32,32,0DBh,   32,32,  0DBh,32,32,0DBh, 32,32, 0DBh,32,32,0DBh,  32,32,  0DBh,32,32,32,  5 DUP(32), 0BAh,"$"
+    L8                      DB 0BAh, 4 DUP(32), 0DBh,32,0DBh,0DBh,  32,32,  0DBh,0DBh,0DBh,0DBh,   32,32,  0DBh,32,32,0DBh,  32,32, 0DBh,0DBh,0DBh,0DBh,   32,32,   0DBh,32,32,32, 5 DUP(32), 0BAh,"$"
+    L9                      DB 0BAh, 4 DUP(32), 0DBh,32,32,0DBh,    32,32,  0DBh,32,32,0DBh,    32,32, 32,0DBh,0DBh,32, 32,32, 0DBh,32,32,0DBh, 32,32,   0DBh,0DBh,0DBh,0DBh, 5 DUP(32), 0BAh,"$"
+   L10                      DB 0C8h, 37 DUP(0CDh), 0BCh, "$"
 
 
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
-  TABULEIRO_INICIAL DW 0C9h, 14 DUP(0CDh), 0BBh
-                    DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-                    DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
-                    DW 0C8h, 14 DUP(0CDh), 0BCh     
-
-  TABULEIRO    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh     
-
-
-TABULEIRO_AUX  DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 10 DUP(?), 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 10 DUP(?), 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh    
-               DW ?,?,?,?,?,?
  
+    TABULEIRO               DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh     
+
+
+    TABULEIRO_AUX           DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 10 DUP(?), 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh    
+                
 ;==========================================================TABULEIROS ALEATÓRIOS
-TABULEIRO_0    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 73H,30H,30H,30H,30H,30H,61H,61H,61H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,61H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 66H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 66H, 30H,30H,53H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 66H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32,65H,65H,65H,65H, 30H ,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
 
-TABULEIRO_1    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
-               DW 0BAH, 32, 30H, 32,53H ,53H ,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,61H,61H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,68H,30h,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,68H,68H,68H,30h,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 65H,65H,65H,65H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
+    TABULEIRO_0             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 73H,30H,30H,30H,30H,30H,61H,61H,61H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,61H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 66H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 66H, 30H,30H,53H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 66H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32,65H,65H,65H,65H, 30H ,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
 
-TABULEIRO_2    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
-               DW 0BAH, 32, 30H, 32, 61H, 30H,30H,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 61H, 61H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 61H, 30H,30h,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAh 
-               DW 0BAH, 32, 33H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,66H,30H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,65H,65H,65H,65H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
+    TABULEIRO_1             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+                            DW 0BAH, 32, 30H, 32,53H ,53H ,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,61H,61H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 73H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 73H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,68H,30h,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,68H,68H,68H,30h,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 65H,65H,65H,65H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
 
-TABULEIRO_3    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,61H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 61H,61H,61H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32,73H,73H, 30H ,30H,53H,30H,30H,30H,30H,68H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,30H,68H,68H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,68H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,66H,66H,66H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh
+     TABULEIRO_2            DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH,    32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 61H, 30H,30H,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 61H, 61H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 61H, 30H,30h,30H,68H,30H,30H,30H,30H,30H  , 32, 0BAh 
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,66H,30H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,65H,65H,65H,65H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
 
-TABULEIRO_4    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,61H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,61H,61H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,61H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 66H, 30H,30h,30h,30h,30h,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 66H, 30H,65H,65H,65H,65H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 66H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
+    TABULEIRO_3             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,61H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 61H,61H,61H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,65H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32,73H,73H, 30H ,30H,53H,30H,30H,30H,30H,68H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,30H,68H,68H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,68H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,66H,66H,66H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh
 
-
-TABULEIRO_5    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32,  66H,66H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,68H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,68H,68H,68H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,53H,53H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 73H, 30h,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 73H, 30H,30H,30H,61H,61H,61H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh
-
-TABULEIRO_6    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,61H,61H,61H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 65H, 65H,65H,65H,30H,30H,30H,30H,61H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,53H,53H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,68H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,68H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
-
-TABULEIRO_7    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 53H,53H,30H,30H,73H,30H,66H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,66H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 68H, 68H,68H,30H,30H,30H,30H,66H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 68H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,61H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 65H, 65H,65H,65H,30h,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
-
-TABULEIRO_8    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,65H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,65H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,61H,30H,30H,30H,30H,65H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,30H,61H,61H,61H,30H,30H,30H,65H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,68H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 73H, 73H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh 
+     TABULEIRO_4            DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 30H,30H,61H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,61H,61H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,61H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,68H,68H,68H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 66H, 30H,30h,30h,30h,30h,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 66H, 30H,65H,65H,65H,65H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 66H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
 
 
-TABULEIRO_9    DW 0C9h, 14 DUP(0CDh), 0BBh
-               DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
-               DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,68H,68H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 32H, 32, 30H, 30H,66H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 33H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 34H, 32, 30H, 30H,66H,30H,30H,30H,30H,73H,73H,30H  , 32, 0BAH
-               DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30h,30h,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,65H,65H,65H,65H,30H  , 32, 0BAH
-               DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 38H, 32, 30H, 61H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
-               DW 0BAH, 32, 39H, 32, 61H, 61H,61H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
-               DW 0C8h, 14 DUP(0CDh), 0BCh   
+    TABULEIRO_5             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32,  66H,66H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,68H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,68H,68H,68H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,53H,53H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,65H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 73H, 30h,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 73H, 30H,30H,30H,61H,61H,61H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh
+
+    TABULEIRO_6             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,61H,61H,61H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 65H, 65H,65H,65H,30H,30H,30H,30H,61H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,53H,53H,30H,66H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,68H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 30H,30H,68H,68H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,68H,30H,30H,73H,73H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+    TABULEIRO_7             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,73H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 53H,53H,30H,30H,73H,30H,66H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,30H,30H,30H,30H,66H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 68H, 68H,68H,30H,30H,30H,30H,66H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 68H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,61H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,61H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 65H, 65H,65H,65H,30h,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+     TABULEIRO_8            DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,65H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,65H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,30H,30H,61H,30H,30H,30H,30H,65H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,30H,61H,61H,61H,30H,30H,30H,65H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,30H,30H,30H,30H,30H,68H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,68H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,53H,30H,30H,68H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 73H, 73H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,66H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh 
+
+
+    TABULEIRO_9             DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 30H, 30H,30H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 30H, 30H,30H,30H,30H,68H,68H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 30H, 30H,66H,30H,30H,30H,68H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 30H, 30H,66H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 30H, 30H,66H,30H,30H,30H,30H,73H,73H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 30H, 30H,30H,30h,30h,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 30H, 30H,30H,30H,30H,65H,65H,65H,65H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 30H, 30H,30H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 30H, 61H,30H,30H,30H,53H,53H,30H,30H,30H  , 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 61H, 61H,61H,30H,30H,30H,30H,30H,30H,30H  , 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh   
 ;======================================= OUTRAS STRINGS
 
-    PTC                 DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
-    MSG_SAIDA_JOGO      DB "-->ESC PARA SAIR<--$"
+    PTC                     DB "Pressione qualquer tecla para continuar ... $" ;PTC VEM DE PRESS TO CONTINUE
+    MSG_SAIDA_JOGO          DB "-->ESC PARA SAIR<--$"
 
 ;======================================= STRINGS PARA MANUAL DE INSTRUÇÃO
 
-    REGRAS              DB "================BEM-VINDO AO BATALHA NAVAL================== $"
-    REGRA1              DB " -> NESTE JOGO EH VOCE CONTRA A CPU $"
-    REGRA2              DB " -> EH GERADO UM TABULEIRO 10x10, COM 6 EMBARCACOES $"
-    REGRA3              DB " -> SENDO ESTAS 1 ENCOURACADO, 1 FRAGATA, 2 SUBMARINOS E 2 HIDROAVIOES$"
-    FORM_E              DB " - ENCOURCADO: 4 BLOCOS, NA HORIZONTAL OU VERTICAL $"
-    FORM_F              DB " - FRAGATA: 3 BLOCOS, NA HORIZONTAL OU VERTICAL $"
-    FORM_S              DB " - SUBMARINO: 2 BLOCOS, NA HORIZONTAL OU VERTICAL$"
-    FORM_H              DB " - HIDROAVIAO: 4 BLOCOS EM FORMATO DE T $"
-    REGRA4              DB " -> ACERTOS SAO INDICADOS COM ",16h," E ERROS COM ",0F7h," $"
-    REGRA5              DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS ACABAREM SEUS TIROS $"
-    REGRA6              DB " -> DIGITE A COORDENADA QUE DESEJA ATACAR, EX: 0C $"
-    REGRA7              DB " -> APERTAR ESC FINALIZA AUTOMATICAMENTE O JOGO$"
+    REGRAS                  DB "================BEM-VINDO AO BATALHA NAVAL================== $"
+    REGRA1                  DB " -> NESTE JOGO EH VOCE CONTRA A CPU $"
+    REGRA2                  DB " -> EH GERADO UM TABULEIRO 10x10, COM 6 EMBARCACOES $"
+    REGRA3                  DB " -> SENDO ESTAS 1 ENCOURACADO, 1 FRAGATA, 2 SUBMARINOS E 2 HIDROAVIOES$"
+    FORM_E                  DB " - ENCOURCADO: 4 BLOCOS, NA HORIZONTAL OU VERTICAL $"
+    FORM_F                  DB " - FRAGATA: 3 BLOCOS, NA HORIZONTAL OU VERTICAL $"
+    FORM_S                  DB " - SUBMARINO: 2 BLOCOS, NA HORIZONTAL OU VERTICAL$"
+    FORM_H                  DB " - HIDROAVIAO: 4 BLOCOS EM FORMATO DE T $"
+    REGRA4                  DB " -> ACERTOS SAO INDICADOS COM ",16h," E ERROS COM ",0F7h," $"
+    REGRA5                  DB " -> O JOGO ACABA QUANDO VOCE AFUNDA-LAS ACABAREM SEUS TIROS $"
+    REGRA6                  DB " -> DIGITE A COORDENADA QUE DESEJA ATACAR, EX: 0C $"
+    REGRA7                  DB " -> APERTAR ESC FINALIZA AUTOMATICAMENTE O JOGO$"
 
 
     ; Terminar as regras do jogo
 
 
 
-    BAT_NAV             DB "===========================BATALHA NAVAL ASSEMBLY X86===========================$"
+    BAT_NAV                 DB "===========================BATALHA NAVAL ASSEMBLY X86===========================$"
 
 ;======================================= STRINGS PARA PROCEDIMENTO "PEGAR COORDENADAS PROC"
 
-    MSG_ATAQUE_LINHA    DB  "Digite o numero da linha para o ataque: $"
-    MSG_ATAQUE_COLUNA   DB  "Digite o letra da coluna para o ataque: $"
-    POS_LINHA           DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
-    POS_COLUNA          DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
-    MSG_ERRO_MAPA       DB "Coordenada invalida!! $"
+    MSG_ATAQUE_LINHA        DB  "Digite o numero da linha para o ataque: $"
+    MSG_ATAQUE_COLUNA       DB  "Digite o letra da coluna para o ataque: $"
+    POS_LINHA               DW ? ;LINHA É DW POR CAUSA DO MAPA SER DW
+    POS_COLUNA              DW ?  ;COLUNA É DW POR CAUSA DO MAPA SER DW
+    MSG_ERRO_MAPA           DB "Coordenada invalida!! $"
   
 
 ;======================================= STRINGS PARA PROCEDIMENTO "VERIFICA FIM DE JOGO"
 
     ; R é de row
-    R0                 DB 0C9h, 60 DUP(0CDh),0BBh, "$" 
-    R                  DB 0BAh, 60 DUP(32), 0BAh, "$" ;R É APENAS PARA espaço ENTRE PALAVRAS
-    R10                DB 0C8h, 60 DUP(0CDh), 0BCh,"$"
-    TRACINHO           DB 0BAh, "$"
+    R0                       DB 0C9h, 60 DUP(0CDh),0BBh, "$" 
+    R                        DB 0BAh, 60 DUP(32), 0BAh, "$" ;R É APENAS PARA espaço ENTRE PALAVRAS
+    R10                      DB 0C8h, 60 DUP(0CDh), 0BCh,"$"
+    TRACINHO                 DB 0BAh, "$"
 
     MSG_FIM_JOGO_VITORIA     DB  "Voce ganhou! Deseja jogar novamente (S/N)? $"; 43 CARACTERES
     MSG_FIM_JOGO_DERROTA     DB  "Voce perdeu! Deseja jogar novamente (S/N)? $"; 43 CARACTERES
-    MSG_ERRO_FIM_JOGO DB  "Opcao invalida. Digite S para sim ou N para nao: $"; 49 CARACTERES
+    MSG_ERRO_FIM_JOGO        DB  "Opcao invalida. Digite S para sim ou N para nao: $"; 49 CARACTERES
         ; Definição dos caracteres para os navios
-    MASTRO             DB 0B3h, "$"   ; Mastro vertical 
-    VELA1              DB 0DFh, "$"    ; Parte da vela 
-    VELA2              DB 0DCh, "$"   ; Parte da vela 
-    VELA3              DB 0DBh, "$"   ; Vela cheia 
-    CORDA              DB 0C4h, "$"    ; Corda horizontal 
-    CASCO1             DB 0DBh, "$"    ; Bloco cheio para casco 
-    CASCO2             DB 0B2h, "$"   ; Bloco parcial 
-    CASCO3             DB 0B1h, "$"   ; Bloco leve 
-    AGUA               DB 80 DUP(0F7H) ; Ondas
+    MASTRO                   DB 0B3h, "$"   ; Mastro vertical 
+    VELA1                    DB 0DFh, "$"    ; Parte da vela 
+    VELA2                    DB 0DCh, "$"   ; Parte da vela 
+    VELA3                    DB 0DBh, "$"   ; Vela cheia 
+    CORDA                    DB 0C4h, "$"    ; Corda horizontal 
+    CASCO1                   DB 0DBh, "$"    ; Bloco cheio para casco 
+    CASCO2                   DB 0B2h, "$"   ; Bloco parcial 
+    CASCO3                   DB 0B1h, "$"   ; Bloco leve 
+    AGUA                     DB 80 DUP(0F7H) ; Ondas
 
 
 
@@ -589,98 +574,101 @@ COUNT_TABELA_HIDROAVIAO     DB 2
 COUNT_TABELA_ENCOURACADO    DB 1
 ;==================================== VARIÁVEIS DE CONTROLE PARA IMPRIMIR A MATRIZ
 
-    CONTADOR            EQU 208
-    FIM_LINHA           EQU 30
-    ULTIMA_POS          EQU 400
+    CONTADOR                EQU 208
+    FIM_LINHA               EQU 30
+    ULTIMA_POS              EQU 400
 
 ;==================================== CONTADORES PARA VERIICAR SE A EMBARCAÇÃO FOI ATINGIDA POR COMPLETO
 
-    contFragata         DB 3
-    contEncouracado     DB 4
-    contSubmarinoA      DB 2
-    contSubmarinoB      DB 2
-    contHidroaviaoA     DB 4
-    contHidroaviaoB     DB 4
-    countGeral          DB 0
+    contFragata             DB 3
+    contEncouracado         DB 4
+    contSubmarinoA          DB 2
+    contSubmarinoB          DB 2
+    contHidroaviaoA         DB 4
+    contHidroaviaoB         DB 4
+    countGeral              DB 0
 
 ;=======================MENSAGENS DE AFUNDADO========================
 
-    MSG_COORDENADA_REPETIDA     DB 'ESTA COORDENADA JA FOI ATACADA $'
-    ENCOURACADO_AFUNDOU_MSG     DB "Voce afundou o Encouracado! $"
-    FRAGATA_AFUNDOU_MSG         DB "Voce afundou o Fragata! $"
-    SUBMARINO_AFUNDOU_MSG       DB "Voce afundou um Submarino! $"
-    HIDROAVIAO_AFUNDOU_MSG      DB "Voce afundou um Hidroaviao! $"
+    MSG_COORDENADA_REPETIDA DB 'ESTA COORDENADA JA FOI ATACADA $'
+    ENCOURACADO_AFUNDOU_MSG DB "Voce afundou o Encouracado! $"
+    FRAGATA_AFUNDOU_MSG     DB "Voce afundou o Fragata! $"
+    SUBMARINO_AFUNDOU_MSG   DB "Voce afundou um Submarino! $"
+    HIDROAVIAO_AFUNDOU_MSG  DB "Voce afundou um Hidroaviao! $"
     
 
 ;=======================VARIAVEL QUE DEFINE FIM DE JOGO========================
 
-    VAR_FIM_DE_JOGO DB 0 ;ESSA VARIAVEL DEFINE O FIM DO JOGO, SE ELA FOR ZERO O JOGO ACABA E SE ELA FOR UM O JOGO CONTINUA.
+    VAR_FIM_DE_JOGO         DB 0 ;ESSA VARIAVEL DEFINE O FIM DO JOGO, SE ELA FOR ZERO O JOGO ACABA E SE ELA FOR UM O JOGO CONTINUA.
 
 ;=======================VARIAVEL QUE DEFINE A QUANTIDADE DE TIROS========================
-    TIROS DB 0; QUANTIDADE DE TIROS QUE O JOGADOR TEM
-    QTD_SALVA_TIROS DB 50; QUANTIDADE DE TIROS QUE O JOGADOR TEM POR PARTIDA
-    TIROS_RESTANTES DB 'TIROS RESTANTES: $'
+    TIROS                   DB 0; QUANTIDADE DE TIROS QUE O JOGADOR TEM
+    QTD_SALVA_TIROS         DB 50; QUANTIDADE DE TIROS QUE O JOGADOR TEM POR PARTIDA
+    TIROS_RESTANTES         DB 'TIROS RESTANTES: $'
 
+;++++++++++++++++++++++++++++++++++++++++++++++++++++
+;               SEGMENTO DE CÓDIGO
+;++++++++++++++++++++++++++++++++++++++++++++++++++++
 .CODE 
 
 MAIN PROC
-    MOV AX, @DATA
-    MOV DS, AX
-    MOV ES, AX
-    JMP JOGAR_PRIMEIRA_VEZ
+    MOV                 AX, @DATA
+    MOV                 DS, AX
+    MOV                 ES, AX
+    JMP                 JOGAR_PRIMEIRA_VEZ
 
     JOGAR:; RESETA OS VALORES
 
     ;RESETAR COUNTS
-   MOV contFragata         , 3
-   MOV contEncouracado     , 4
-   MOV contSubmarinoA      , 2
-   MOV contSubmarinoB      , 2
-   MOV contHidroaviaoA     , 4
-   MOV contHidroaviaoB     , 4
-   MOV countGeral          , 0
+   MOV                  contFragata, 3
+   MOV                  contEncouracado, 4
+   MOV                  contSubmarinoA, 2
+   MOV                  contSubmarinoB, 2
+   MOV                  contHidroaviaoA, 4
+   MOV                  contHidroaviaoB, 4
+   MOV                  countGeral, 0
 
     ;RESETAR O TABULEIRO
 
     RESET_TABULEIRO:
-    XOR AX, AX
-    MOV CX, CONTADOR   ; Define o número de elementos a copiar
-    MOV SI, OFFSET TABULEIRO_INICIAL ; Aponta para o tabuleiro inicial
-    MOV DI, OFFSET TABULEIRO         ; Aponta para o tabuleiro em uso
+    XOR                 AX, AX
+    MOV                 CX, CONTADOR   ; Define o número de elementos a copiar
+    MOV                 SI, OFFSET TABULEIRO_INICIAL ; Aponta para o tabuleiro inicial
+    MOV                 DI, OFFSET TABULEIRO         ; Aponta para o tabuleiro em uso
     CLD ;DEFINE A DIREÇÃO
-    REP MOVSW ;REPETE ATE TROCAR TODOS OS CARATERES
+    REP                 MOVSW ;REPETE ATE TROCAR TODOS OS CARATERES
 
 
     JOGAR_PRIMEIRA_VEZ:
-    MOV AL, QTD_SALVA_TIROS ; Carrega o valor de QTD_SALVA_TIROS em AL
-    MOV TIROS, AL           ; Move o valor de AL para TIROS
-    CALL        TELA_INICIAL
-    CALL        MANUAL_INSTRUCAO
+    MOV                 AL, QTD_SALVA_TIROS ; Carrega o valor de QTD_SALVA_TIROS em AL
+    MOV                 TIROS, AL           ; Move o valor de AL para TIROS
+    CALL                TELA_INICIAL
+    CALL                MANUAL_INSTRUCAO
 
     CLEAR_SCREEN ;LIMPA A TELA
     ENDL ;PULA UMA LINHA
-    CALL        GERA_TABULEIRO ;gera o tabuleiro aleatório das embarcações
+    CALL                GERA_TABULEIRO ;gera o tabuleiro aleatório das embarcações
     ;MOSTRA A MATRIZ INICIAL NA TELA PARA O USUÁRIO
-    JMP ATAQUE
+    JMP                 ATAQUE
     JUMP_JOGAR:
-    JMP JOGAR
+    JMP                 JOGAR
 
     ATAQUE:
-    CALL PRINT_MATRIZ ;IMPRIME A MATRIZ NA TELA
-    CALL UPDATE_TABELA_NAVIOS; ATUALIZA A TABELA QUE CONTEM OS NAVIOS QUE NAO FORAM AFUNDADOS AINDA
-    CALL PRINT_TIROS ;IMPRIME A QUANTIDADE DE TIROS RESTANTES
-    CALL PEGAR_COORDENADAS ;PEGA AS COORDENADAS DO ATAQUE DO USUÁRIO
+    CALL                PRINT_MATRIZ ;IMPRIME A MATRIZ NA TELA
+    CALL                UPDATE_TABELA_NAVIOS; ATUALIZA A TABELA QUE CONTEM OS NAVIOS QUE NAO FORAM AFUNDADOS AINDA
+    CALL                PRINT_TIROS ;IMPRIME A QUANTIDADE DE TIROS RESTANTES
+    CALL                PEGAR_COORDENADAS ;PEGA AS COORDENADAS DO ATAQUE DO USUÁRIO
     ENDL
-    CALL        UPDATE_ATAQUE ;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO
+    CALL                UPDATE_ATAQUE ;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO
     CLEAR_SCREEN
-    CALL        VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
+    CALL                VERIFICA_AFUNDOU  ;vê se depois de atingida, a embarcação foi afundada
     ;VERIFICAR SE EXISTE AINDA ALGUMA CASA (1), OU SEJA, SE EXISTE EMBARCAÇÃO AINDA, SE N, ENCERRA O JOGO
     ;VERIFICA_FIM_JOGO -->>FAZER UMA VARREDURA DE VERIFICAR SE AINDA EXISTE EMBARCAÇÃO VIVA. OU, PARA CADA EMBARCAÇÃO ATINGIDA ADICIONAR UM COTADOR, E QUANDO O CONTADOR CHEGAR A 6, ACABA
     ;SE NAO TIVER MAIS EMBARCAÇÕES, SAI DESSE LOOP DE ATAQUE
-    CMP countGeral, 6;Verifica se todas as embarcações ja foram afundadas
-    JE SAI_LOOP_ATAQUE     ;SAINDO DO LOOP DE ATAQUE, MOTRA MENSAGEM DE JOGO ACABADO
-    CMP TIROS, 0
-    JNZ ATAQUE
+    CMP                 countGeral, 6;Verifica se todas as embarcações ja foram afundadas
+    JE                  SAI_LOOP_ATAQUE     ;SAINDO DO LOOP DE ATAQUE, MOTRA MENSAGEM DE JOGO ACABADO
+    CMP                 TIROS, 0
+    JNZ                 ATAQUE
 
 ;TODO:
     ;CONTABILIZAR ACERTO E ERRO DE EMBARCAÇÕES
@@ -688,14 +676,14 @@ MAIN PROC
     ;se acertou todas, finalizar o jogo
     ;jogar denovo?
 SAI_LOOP_ATAQUE:
-    CALL    VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
-    CMP     VAR_FIM_DE_JOGO, 1
-    JE      JUMP_JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
+    CALL                VERIFICA_FIM_JOGO ;VERIFICA SE O JOGO ACABOU, E SE O USUARIO QUISER TERMINAR O JOGO, ELE É ENCERRADO.
+    CMP                 VAR_FIM_DE_JOGO, 1
+    JE                  JUMP_JOGAR ;SE VAR_FIM_DE_JOGO FOR 1, O JOGO CONTINUA, E SE FOR 0 O JOGO ACABA
     
     FIM_DE_JOGO:
     CLEAR_SCREEN
-    MOV AH, 4CH
-    INT 21H
+    MOV                 AH, 4CH
+    INT                 21H
     
 ENDP MAIN
 
@@ -711,47 +699,47 @@ ENDP MAIN
 TELA_INICIAL PROC
         CLEAR_SCREEN
 
-    POS_CURSOR 5, 18
-    PRINT_COR L0, VERMELHO
-    POS_CURSOR 6, 18
-    PRINT_COR L1, VERMELHO
-    POS_CURSOR 7, 18
-    PRINT_COR L2, VERMELHO
-    POS_CURSOR 8, 18
-    PRINT_COR L3, VERMELHO
-    POS_CURSOR 9, 18
-    PRINT_COR L4, VERMELHO
-    POS_CURSOR 10, 18
-    PRINT_COR L5, VERMELHO
-    POS_CURSOR 11, 18
-    PRINT_COR L, VERMELHO
-    POS_CURSOR 12, 18
-    PRINT_COR L6, VERMELHO
-    POS_CURSOR 13, 18
-    PRINT_COR L7, VERMELHO
-    POS_CURSOR 14, 18
-    PRINT_COR L8, VERMELHO
-    POS_CURSOR 15, 18
-    PRINT_COR L9, VERMELHO
-    POS_CURSOR 16, 18
-    PRINT_COR L10, VERMELHO
+    POS_CURSOR      5, 18
+    PRINT_COR       L0, VERMELHO
+    POS_CURSOR      6, 18
+    PRINT_COR       L1, VERMELHO
+    POS_CURSOR      7, 18
+    PRINT_COR       L2, VERMELHO
+    POS_CURSOR      8, 18
+    PRINT_COR       L3, VERMELHO
+    POS_CURSOR      9, 18
+    PRINT_COR       L4, VERMELHO
+    POS_CURSOR      10, 18
+    PRINT_COR       L5, VERMELHO
+    POS_CURSOR      11, 18
+    PRINT_COR       L, VERMELHO
+    POS_CURSOR      12, 18
+    PRINT_COR       L6, VERMELHO
+    POS_CURSOR      13, 18
+    PRINT_COR       L7, VERMELHO
+    POS_CURSOR      14, 18
+    PRINT_COR       L8, VERMELHO
+    POS_CURSOR      15, 18
+    PRINT_COR       L9, VERMELHO
+    POS_CURSOR      16, 18
+    PRINT_COR       L10, VERMELHO
 
-    POS_CURSOR 18, 25
-    PRINT_COR BY, CINZA_ESCURO
+    POS_CURSOR      18, 25
+    PRINT_COR       BY, CINZA_ESCURO
 
-    POS_CURSOR 19, 25
-    PRINT_COR TIAGO, VERDE
+    POS_CURSOR      19, 25
+    PRINT_COR       TIAGO, VERDE
 
-    POS_CURSOR 20, 25
-    PRINT_COR RAFAEL, VERDE
+    POS_CURSOR      20, 25
+    PRINT_COR       RAFAEL, VERDE
 
-    POS_CURSOR 21, 25
-    PRINT_COR ARTUR, VERDE
+    POS_CURSOR      21, 25
+    PRINT_COR       ARTUR, VERDE
 
 
 
-    POS_CURSOR 23, 18
-    PRINTS PTC
+    POS_CURSOR      23, 18
+    PRINTS          PTC
     PPC
 
     RET
@@ -771,39 +759,39 @@ MANUAL_INSTRUCAO PROC
         CLEAR_SCREEN
 
         ; IMPRIMIR MANUAL DE INSTRUÇÕES
-        POS_CURSOR 3, 5
-        PRINT_COR REGRAS, CINZA_ESCURO
+        POS_CURSOR      3, 5
+        PRINT_COR       REGRAS, CINZA_ESCURO
 
-        POS_CURSOR 6, 5
-        PRINT_COR REGRA1, CINZA_CLARO
-        POS_CURSOR 7, 5
-        PRINT_COR REGRA2, CINZA_CLARO
-        POS_CURSOR 8, 5
-        PRINT_COR REGRA3, CINZA_CLARO
+        POS_CURSOR      6, 5
+        PRINT_COR       REGRA1, CINZA_CLARO
+        POS_CURSOR      7, 5
+        PRINT_COR       REGRA2, CINZA_CLARO
+        POS_CURSOR      8, 5
+        PRINT_COR       REGRA3, CINZA_CLARO
 
-            POS_CURSOR 9, 8
-            PRINT_COR FORM_E, VERMELHO
-            POS_CURSOR 10, 8
-            PRINT_COR FORM_F, VERMELHO
-            POS_CURSOR 11, 8
-            PRINT_COR FORM_S, VERMELHO
-            POS_CURSOR 12, 8
-            PRINT_COR FORM_H, VERMELHO
+            POS_CURSOR  9, 8
+            PRINT_COR   FORM_E, VERMELHO
+            POS_CURSOR  10, 8
+            PRINT_COR   FORM_F, VERMELHO
+            POS_CURSOR  11, 8
+            PRINT_COR   FORM_S, VERMELHO
+            POS_CURSOR  12, 8
+            PRINT_COR   FORM_H, VERMELHO
 
-        POS_CURSOR 13, 5
-        PRINT_COR REGRA4, CINZA_CLARO
-        POS_CURSOR 14, 5
-        PRINT_COR REGRA5, CINZA_CLARO
-        POS_CURSOR 15, 5
-        PRINT_COR REGRA6, CINZA_CLARO
-        POS_CURSOR 16, 5
-        PRINT_COR REGRA7, CINZA_CLARO
+        POS_CURSOR      13, 5
+        PRINT_COR       REGRA4, CINZA_CLARO
+        POS_CURSOR      14, 5
+        PRINT_COR       REGRA5, CINZA_CLARO
+        POS_CURSOR      15, 5
+        PRINT_COR       REGRA6, CINZA_CLARO
+        POS_CURSOR      16, 5
+        PRINT_COR       REGRA7, CINZA_CLARO
 
-        POS_CURSOR 19, 5
-        PRINT_COR REGRAS, CINZA_ESCURO
+        POS_CURSOR      19, 5
+        PRINT_COR       REGRAS, CINZA_ESCURO
 
-        POS_CURSOR 20,15
-        PRINTS PTC  
+        POS_CURSOR      20,15
+        PRINTS          PTC  
         PPC
 
         RET
@@ -871,27 +859,27 @@ PRINT_MATRIZ ENDP
 
 PRINT_TIROS PROC 
 PUSH_ALL
-POS_CURSOR 24, 60
-PRINT_COR TIROS_RESTANTES, VERMELHO
-    XOR AX, AX
-    XOR BX, BX
-    XOR CX,CX     ; contador de d?gitos
-    MOV AL, TIROS
-    MOV BX,10      ; divisor
+POS_CURSOR      24, 60
+PRINT_COR       TIROS_RESTANTES, VERMELHO
+    XOR         AX, AX
+    XOR         BX, BX
+    XOR         CX,CX     ; contador de d?gitos
+    MOV         AL, TIROS
+    MOV         BX,10      ; divisor
 REPEAT:
-    XOR DX,DX      ; prepara parte alta do dividendo
-    DIV BX         ; AX = quociente   DX = resto
-    PUSH DX        ; salva resto na pilha
-    INC CX         ; contador = contador +1
-    OR AX,AX       ; quociente = 0?
-    JNE REPEAT     ; SE NAO FOR, PULA PRA REP1
+    XOR         DX,DX      ; prepara parte alta do dividendo
+    DIV         BX         ; AX = quociente   DX = resto
+    PUSH        DX        ; salva resto na pilha
+    INC         CX         ; contador = contador +1
+    OR          AX,AX       ; quociente = 0?
+    JNE         REPEAT     ; SE NAO FOR, PULA PRA REP1
 
-    MOV AH,2 ;LOOP POR CX VEZES
+    MOV         AH,2 ;LOOP POR CX VEZES
 IMP_LOOP:
-    POP DX        ; digito em DL
-    OR DL,30H
-    INT 21H
-    LOOP IMP_LOOP
+    POP         DX        ; digito em DL
+    OR          DL,30H
+    INT         21H
+    LOOP        IMP_LOOP
 POP_ALL
 PRINT_TIROS ENDP
 
@@ -917,7 +905,7 @@ ALEATORIO PROC
     XOR         DX, DX                      ; Limpa DX para a divisão
     MOV         BX, 10                     ; O divisor é 10 para limitar o valor de 0 a 9
     DIV         BX                         ; Divide AX por 10
-    MOV     NUM_ALEATORIO, DX          ; Armazena o resto (0-9) em NUM_ALEATORIO
+    MOV         NUM_ALEATORIO, DX          ; Armazena o resto (0-9) em NUM_ALEATORIO
     RET
 
 ALEATORIO ENDP
@@ -939,8 +927,8 @@ PEGAR_COORDENADAS PROC
     POS_CURSOR  0, 0
     PRINT_COR   BAT_NAV, AZUL
 
-    POS_CURSOR 1, 30
-    PRINT_COR MSG_SAIDA_JOGO, VERMELHO
+    POS_CURSOR  1, 30
+    PRINT_COR   MSG_SAIDA_JOGO, VERMELHO
 
     POS_CURSOR  15, 20
     PRINT_COR   MSG_ATAQUE_LINHA, MAGENTA             ; mensagem de pegar coordenadas na tela
@@ -948,8 +936,8 @@ PEGAR_COORDENADAS PROC
     MOV         AH, 01H                         ; pega o caractere
     INT         21H
 
-    CMP AL, 27     ; COMPARA COM CARACTER ESC
-    JE ESC_PRESSED; FINALIZA O JOGO
+    CMP         AL, 27     ; COMPARA COM CARACTER ESC
+    JE          ESC_PRESSED; FINALIZA O JOGO
 ;                                       ; Verifica se a linha está dentro do limite (0 a 9)
     CMP         AL, "0"
     JL          FORA_DO_MAPA                     ; Linha menor que 0, fora do mapa
@@ -975,8 +963,8 @@ PEGAR_COORDENADAS PROC
     MOV         AH, 01H                         ; pega o caractere
     INT         21h
 
-    CMP AL, 27
-    JE ESC_PRESSED; FINALIZA O JOGO
+    CMP         AL, 27
+    JE          ESC_PRESSED; FINALIZA O JOGO
     
         ; Verifica se a coluna é uma letra minúscula (a-j)
     CMP         AL, "a"
@@ -1178,35 +1166,35 @@ UPDATE_ATAQUE PROC;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO PROC
     PUSH_ALL
     ;DI deve permanescer com o offsets da geração de tabuleiro AUX
     
-    DEC TIROS; DECREMENTA A QUANTIDADE DE TIROS
-    MOV AX, POS_LINHA      ; AX = linha
-    ADD AX, POS_COLUNA     ;(deslocamento final)
+    DEC         TIROS; DECREMENTA A QUANTIDADE DE TIROS
+    MOV         AX, POS_LINHA      ; AX = linha
+    ADD         AX, POS_COLUNA     ;(deslocamento final)
     
     ; Carregar o valor da posição na matriz
-    LEA SI, TABULEIRO      ; SI aponta para o início da MATRIZ NORMAL
-    LEA DI, TABULEIRO_AUX  ; DI aponta para o início da MATRIZ AUXILIAR
-    ADD SI, AX               ; SI aponta para a posição na matriz normal
-    ADD DI, AX              ; DI aponta para o elemento da matriz[linha][coluna] do tabuleiro inimigo
-    MOV BX, [DI]            ;COMPARA COM O TABULEIRO AUX, DO INIMIGO
+    LEA         SI, TABULEIRO      ; SI aponta para o início da MATRIZ NORMAL
+    LEA         DI, TABULEIRO_AUX  ; DI aponta para o início da MATRIZ AUXILIAR
+    ADD         SI, AX               ; SI aponta para a posição na matriz normal
+    ADD         DI, AX              ; DI aponta para o elemento da matriz[linha][coluna] do tabuleiro inimigo
+    MOV         BX, [DI]            ;COMPARA COM O TABULEIRO AUX, DO INIMIGO
 
     ;verificar se o tiro acertou a embarcação ou não
     ;COMPARA COM CADA UMA EMBARCAÇÃO NA MATRIZ AUX
-    CMP BX, "f"
-    JE ACERTO_FRAGATA
-    CMP BX, "e"
-    JE ACERTO_ENCORACADO
-    CMP BX, "S"
-    JE ACERTO_SUBMARINOA
-    CMP BX, "s"
-    JE ACERTO_SUBMARINOB
-    CMP BX, "a"
-    JE ACERTO_HIDROAVIAOA
-    CMP BX, "h"
-    JE ACERTO_HIDROAVIAOB
-    CMP BX, 16h
-    JE REPETIDO
-    CMP BX, 0F7H
-    JE REPETIDO
+    CMP         BX, "f"
+    JE          ACERTO_FRAGATA
+    CMP         BX, "e"
+    JE          ACERTO_ENCORACADO
+    CMP         BX, "S"
+    JE          ACERTO_SUBMARINOA
+    CMP         BX, "s"
+    JE          ACERTO_SUBMARINOB
+    CMP         BX, "a"
+    JE          ACERTO_HIDROAVIAOA      
+    CMP         BX, "h"
+    JE          ACERTO_HIDROAVIAOB
+    CMP         X, 16h
+    JE          REPETIDO
+    CMP         BX, 0F7H
+    JE          REPETIDO
                           ;Verifica se a célula contém uma embarcação
 
 ERROU:
@@ -1261,11 +1249,11 @@ ERROU:
 
     ;verificar se a cordenada ja foi atacada e mostrar mensagem disso
     REPETIDO:
-     INC TIROS
-    POS_CURSOR 11,20
-    PRINT_COR MSG_COORDENADA_REPETIDA, VERMELHO
-    POS_CURSOR 12,20
-    PRINTS PTC
+    INC         TIROS
+    POS_CURSOR  11,20
+    PRINT_COR   MSG_COORDENADA_REPETIDA, VERMELHO
+    POS_CURSOR  12,20
+    PRINTS      PTC
     PPC 
     ENDL
     
@@ -1293,21 +1281,21 @@ UPDATE_ATAQUE ENDP;ATUALIZA A MATRIZ COM O ATAQUE DO USUÁRIO ENDPATUALIZA A MAT
 ;=================PROCEDIMENTO DE ATUALIZAÇÃO DE TABELA DE NAVIOS=================}
 UPDATE_TABELA_NAVIOS PROC
     
-    POS_CURSOR 4, 3
-    PRINT_COR TABELA_FRAGATA, CIANO
-    PRINTNUM COUNT_TABELA_FRAGATA
+    POS_CURSOR      4, 3
+    PRINT_COR       TABELA_FRAGATA, CIANO
+    PRINTNUM        COUNT_TABELA_FRAGATA
 
-    POS_CURSOR 5, 3
-    PRINT_COR TABELA_ENCOURACADO, CIANO
-    PRINTNUM COUNT_TABELA_ENCOURACADO
+    POS_CURSOR      5, 3
+    PRINT_COR       TABELA_ENCOURACADO, CIANO
+    PRINTNUM        COUNT_TABELA_ENCOURACADO
     
-    POS_CURSOR 6, 3
-    PRINT_COR TABELA_SUBMARINO, CIANO
-    PRINTNUM COUNT_TABELA_SUBMARINO
+    POS_CURSOR      6, 3
+    PRINT_COR       TABELA_SUBMARINO, CIANO
+    PRINTNUM        COUNT_TABELA_SUBMARINO
 
-    POS_CURSOR 7, 3
-    PRINT_COR TABELA_HIDROAVIAO, CIANO
-    PRINTNUM COUNT_TABELA_HIDROAVIAO
+    POS_CURSOR      7, 3
+    PRINT_COR       TABELA_HIDROAVIAO, CIANO
+    PRINTNUM        COUNT_TABELA_HIDROAVIAO
     RET
 UPDATE_TABELA_NAVIOS ENDP
 
@@ -1350,15 +1338,15 @@ VERIFICA_AFUNDOU PROC
     JMP         FIM_AFUNDOU
 
 ENCOURACADO_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_ENCOURACADO
+    INC         countGeral
+    DEC         COUNT_TABELA_ENCOURACADO
     INC         contEncouracado ;tem que incrementar o contador toda vez que afudar uma embarcação para que ela não seja afundada repetidamente
     PRINT_COR   ENCOURACADO_AFUNDOU_MSG, VERMELHO
     JMP         FIM_AFUNDOU
 
 FRAGATA_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_FRAGATA
+    INC         countGeral
+    DEC         COUNT_TABELA_FRAGATA
     
     INC         contFragata
     PRINT_COR   FRAGATA_AFUNDOU_MSG, VERMELHO
@@ -1366,8 +1354,8 @@ FRAGATA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 SUBMARINOA_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_SUBMARINO
+    INC         countGeral
+    DEC         COUNT_TABELA_SUBMARINO
     POS_CURSOR  20,25
     INC         contSubmarinoA
     PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO
@@ -1375,16 +1363,16 @@ SUBMARINOA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 SUBMARINOB_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_SUBMARINO
+    INC         countGeral
+    DEC         COUNT_TABELA_SUBMARINO
     
     INC         contSubmarinoB
     PRINT_COR   SUBMARINO_AFUNDOU_MSG, VERMELHO 
     JMP         FIM_AFUNDOU
 
 HIDROAVIAOA_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_HIDROAVIAO
+    INC         countGeral
+    DEC         COUNT_TABELA_HIDROAVIAO
     
     INC         contHidroaviaoA
     PRINT_COR   HIDROAVIAO_AFUNDOU_MSG, VERMELHO
@@ -1392,8 +1380,8 @@ HIDROAVIAOA_AFUNDOU:
     JMP         FIM_AFUNDOU
 
 HIDROAVIAOB_AFUNDOU:
-    INC countGeral
-    DEC COUNT_TABELA_HIDROAVIAO
+    INC         countGeral
+    DEC         COUNT_TABELA_HIDROAVIAO
 
     INC         contHidroaviaoB
     PRINT_COR   HIDROAVIAO_AFUNDOU_MSG,VERMELHO
@@ -1591,21 +1579,21 @@ PUSH_ALL
     POS_CURSOR      16, 10
     PRINT_COR       R10, AZUL
 
-    POS_CURSOR 10, 71
-    PRINT_COR TRACINHO, AZUL ;PRINTA O FINAL DA BOX EM QUE A MENSAGEM ESTA INSERIDA
-    POS_CURSOR 10, 10
-    PRINT_COR TRACINHO, AZUL
-    POS_CURSOR 10, 19
+    POS_CURSOR      10, 71
+    PRINT_COR       TRACINHO, AZUL ;PRINTA O FINAL DA BOX EM QUE A MENSAGEM ESTA INSERIDA
+    POS_CURSOR      10, 10
+    PRINT_COR T     RACINHO, AZUL
+    POS_CURSOR      10, 19
     ;FAZER UM SISTEMA DE VERIFICAÇÃO DE VITORIA E DERROTA
-    CMP countGeral, 6
-    JNE DERROTA ;Se todas as embarcações nao tiverem afundadas, mostra msg de derrota
+    CMP             countGeral, 6
+    JNE             DERROTA ;Se todas as embarcações nao tiverem afundadas, mostra msg de derrota
 
-    PRINT_COR MSG_FIM_JOGO_VITORIA, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE GANHOU
-JMP VERIFICA_RESPOSTA_FIM_JOGO
+    PRINT_COR       MSG_FIM_JOGO_VITORIA, VERDE;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE GANHOU
+    JMP             VERIFICA_RESPOSTA_FIM_JOGO
 
 DERROTA:
-    PRINT_COR MSG_FIM_JOGO_DERROTA, VERMELHO;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE PERDEU    
-JMP VERIFICA_RESPOSTA_FIM_JOGO
+    PRINT_COR       MSG_FIM_JOGO_DERROTA, VERMELHO;PRINTA A MENSAGEM DE FIM DE JOGO, MOSTRANDO QUE PERDEU    
+    JMP             VERIFICA_RESPOSTA_FIM_JOGO
 
 ERRO_FIM_JOGO:
  
