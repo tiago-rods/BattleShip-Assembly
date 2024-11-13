@@ -642,6 +642,11 @@ MAIN PROC
    MOV                  contHidroaviaoB, 4
    MOV                  countGeral, 0
 
+   MOV                  COUNT_TABELA_FRAGATA, 1
+   MOV                  COUNT_TABELA_SUBMARINO, 2
+   MOV                  COUNT_TABELA_HIDROAVIAO, 2
+   MOV                  COUNT_TABELA_ENCOURACADO, 1
+
     ;RESETAR O TABULEIRO
 
     RESET_TABULEIRO:
