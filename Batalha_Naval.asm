@@ -325,6 +325,20 @@ ENDM
 
 
 ;==================================== MATRIZ PARA DESENHO DE TABULEIRO
+
+TABULEIRO_INICIAL           DW 0C9h, 14 DUP(0CDh), 0BBh
+                            DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
+                            DW 0BAH, 32, 30H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 31H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 32H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 33H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 34H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 35H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 36H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 37H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 38H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0BAH, 32, 39H, 32, 10 DUP(0B1h), 32, 0BAH
+                            DW 0C8h, 14 DUP(0CDh), 0BCh  
  
     TABULEIRO               DW 0C9h, 14 DUP(0CDh), 0BBh
                             DW 0BAH, 32, 32, 32, 41H,42H,43H,44H,45H,46H,47H,48H,49H,4AH, 32, 0BAH
